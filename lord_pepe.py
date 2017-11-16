@@ -2,14 +2,21 @@ import os
 import discord
 import asyncio
 import random
+import youtube_dl
+import operator
+import json
 
 client = discord.Client()
 
 class Lord_Pepe_API(discord.Client):
+
 	def __init__(self, *args, **kwargs):
 		self.http = client.http
 		self.connection = client.connection
 		self._resolve_destination = client._resolve_destination
+		self.loop = client.loop
+		self._listeners = client._listeners
+
 
 	async def meme(memeIMG, channel, self):
 		await self.send_file(channel, fp=memeIMG)
@@ -36,7 +43,59 @@ class Lord_Pepe_API(discord.Client):
 		await self.send_message(channel, '**Here are all the current followers of memeism:**')
 		await self.send_message(channel, "```{}```".format(all_followers))
 
-	async def check_if_registered(self):
+	async def get_command_ideas(user_id, self):
+		user = await client.get_user_info(user_id)
+		user_dm = await client.start_private_message(user)
+		await self.send_message(user_dm, '**What is your idea?**')
+		message_ = await self.wait_for_message(author=user, content=None)
+		m_c = message_.content
+		with open('resources/ideas.txt', 'a') as ideas_file:
+			print('Command idea: {}'.format(m_c), file=ideas_file)
+
+	async def maths_quiz(author, channel, self):
+		operators = ['/', '*', '+', '-']
+		randint1 = random.randint(0, 100)
+		randint2 = random.randint(0, 100)
+		randoperator_str = random.choice(operators)
+		if (randoperator_str == '/'):
+			ans = randint1 / randint2
+		elif (randoperator_str == '*'):
+			ans = randint1 * randint2
+		elif (randoperator_str == '+'):
+			ans = randint1 + randint2
+		elif (randoperator_str == '-'):
+			ans = randint1 - randint2
+		await client.send_message(channel, 'What is {} {} {}?'.format(randint1, randoperator_str, randint2))
+		await client.wait_for_message(author=author, content=None)
+		answer = int(message.content)
+		if(answer == ans):
+			await client.send_message(channel, '**Ding!**')
+			++right_answers
+		else:
+			await client.send_message(channel, '**Wrong!**')
+
+	async def maths_quiz_main(author, channel, self):
+		global right_answers
+		right_answers = 0
+		global question_num
+		question_num = 0
+		random_list = [0, 1, 2, 3, 4]
+		for int in random_list:
+			for_running = True
+			await self.maths_quiz(author, channel) 
+			++question_num
+		while(for_running):
+			if (question_num >= 5):
+				for_running = False
+				question_num = 0
+
+	async def terminal_to_speech(self):
+		recipient_id = input('UserID>>>')
+		recipient = await self.get_user_info(recipient_id)
+		print('The message will be send to {}.'.format(recipient.name))
+		terminal_msg = input('Message>>>')
+		recipient_dm = await self.start_private_message(recipient)
+		await self.send_message(recipient_dm, terminal_msg)
 
 	async def random_meme(channel, self):
 		random_memes = ['memes/meme1.jpg', 'memes/meme2.jpeg', 'memes/meme3.jpg', 'memes/meme4.jpg', 'memes/meme5.jpeg', 'memes/meme6.jpg', 'memes/meme7.png', 'memes/meme8.jpg', 'memes/meme9.jpg', 'memes/meme10.jpg']
@@ -56,10 +115,24 @@ class Lord_Pepe_API(discord.Client):
 		memeism_server_get_method = await self.get_memeism_server(self)
 		await self.send_message(channel, memeism_server_get_method)
 
+class CLI:
 
+	def __init__(self):
+		pass
 
+	async def cli_main(self):
+		print('PEPE CLI VERSION 1.0.0')
+		comm = input('>>>')
+		if (comm == 'dm'):
+			await Lord_Pepe_API.terminal_to_speech(Lord_Pepe_API(discord.Client))
+			await self.cli_main(self)
+		else:
+			print('Unknown command.')
+			await self.cli_main(self)
 
 class Lord_Pepe:
+
+	SECRETS = json.load(open('SECRETS.json'))
 
 	@client.event
 	async def on_ready():
@@ -106,4 +179,17 @@ class Lord_Pepe:
 		if message.content.lower().startswith('$all_followers'):
 			await Lord_Pepe_API.return_all_followers(message.channel, Lord_Pepe_API(discord.Client))
 
-	client.run('MzgwMDk1NTQ5MTQ5NTQ0NDQ5.DOznMw.DVgUja8gKLD0t49hAUB7EoWJfCY')
+		if message.content.lower().startswith('$idea'):
+			await Lord_Pepe_API.get_command_ideas(message.author.id, Lord_Pepe_API(discord.Client))
+
+		if message.content.lower().startswith('$play'):
+			yt_url = message.content[6:]
+			channel = message.author.voice.voice_channel
+			voice = await client.join_voice_channel(channel)
+			yt_dl_player = await voice.create_ytdl_player(yt_url, before_options=" -reconnect 1 -reconnect_streamed 1" " -reconnect_delay_max 5")
+			yt_dl_player.start()
+
+		if message.content.lower().startswith('$maths'):
+			await Lord_Pepe_API.maths_quiz_main(message.author, message.channel, Lord_Pepe_API(discord.Client))
+
+	client.run(SECRETS["token"])
