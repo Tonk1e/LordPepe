@@ -5,6 +5,7 @@ import random
 import youtube_dl
 import operator
 import json
+import time
 
 client = discord.Client()
 
@@ -102,6 +103,20 @@ class Lord_Pepe_API(discord.Client):
 		await self.send_file(channel, fp=random.choice(random_memes))
 		await self.send_message(channel, '**A meme a day, keeps the feminists away.**')
 
+	async def clear(m_author, chan, self):
+            await self.send_message(chan, '**Are you completely sure that you want to clear this chat?**')
+            aa = await self.wait_for_message(author=m_author, content=None)
+            if (aa.content == 'yes'):
+                cll = await self.purge_from(chan,
+                                         limit = 1000,
+                                         check = None)
+                time.sleep(1)
+                rr = await self.send_message(chan, '**{} messages have been cleared.**'.format(len(cll)))
+                time.sleep(2)
+                await self.delete_message(rr)
+            if (aa.content == 'no'):
+                await self.send_message(chan, 'Ok. I will **not** clear.')
+
 	async def memeism_info(channel, self):
 		with open ('resources/info.txt', 'r') as info:
 			info_ = info.read()
@@ -191,5 +206,10 @@ class Lord_Pepe:
 
 		if message.content.lower().startswith('$maths'):
 			await Lord_Pepe_API.maths_quiz_main(message.author, message.channel, Lord_Pepe_API(discord.Client))
+
+		if message.content.lower().startswith('$clear'):
+			m_author = message.author
+			chan = message.channel
+			await Lord_Pepe_API.clear(m_author, chan, Lord_Pepe_API(discord.Client))
 
 	client.run(SECRETS["token"])
