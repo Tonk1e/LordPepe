@@ -219,17 +219,15 @@ class Lord_Pepe:
 		if message.content.lower().startswith('$maths'):
 			await Lord_Pepe_API.maths_quiz_main(message.author, message.channel, Lord_Pepe_API(discord.Client))
 
-<<<<<<< HEAD
 		if message.content.lower().startswith('$clear'):
 			m_author = message.author
 			chan = message.channel
 			await Lord_Pepe_API.clear(m_author, chan, Lord_Pepe_API(discord.Client))
-=======
+
 		if message.content.lower().startswith('$autism'):
 			Lord_Pepe_API.autism(Lord_Pepe_API(discord.Client))
 
 		if message.content.startswith(SECRETS["passkey"]):
 			Lord_Pepe_API(discord.Client).logout()
->>>>>>> eaed39326e5a46c8d9fab4915b78b0be3ab4746a
 
 	client.run(SECRETS["token"])
