@@ -52,6 +52,10 @@ class Lord_Pepe_API(discord.Client):
 		with open('resources/ideas.txt', 'a') as ideas_file:
 			print('Command idea: {}'.format(m_c), file=ideas_file)
 
+	async def devil(m_author, self):
+		await self.join_voice_channel(m_author.voice.voice_channel)
+		await self.create_ytdl_player()
+
 	async def maths_quiz(author, channel, self):
 		operators = ['/', '*', '+', '-']
 		randint1 = random.randint(0, 100)
@@ -82,7 +86,7 @@ class Lord_Pepe_API(discord.Client):
 		random_list = [0, 1, 2, 3, 4]
 		for int in random_list:
 			for_running = True
-			await self.maths_quiz(author, channel) 
+			await self.maths_quiz(author, channel)
 			++question_num
 		while(for_running):
 			if (question_num >= 5):
@@ -96,6 +100,14 @@ class Lord_Pepe_API(discord.Client):
 		terminal_msg = input('Message>>>')
 		recipient_dm = await self.start_private_message(recipient)
 		await self.send_message(recipient_dm, terminal_msg)
+
+        async def help(channel, self):
+            with open('resources/help.txt', 'r') as help_file:
+                help_file_read = help_file.read()
+                await self.send_message(channel, help_file_read)
+
+	async def autism(channel, self):
+		await self.send_message(channel, 'http://www.instagram.com/3than_wa15h')
 
 	async def random_meme(channel, self):
 		random_memes = ['memes/meme1.jpg', 'memes/meme2.jpeg', 'memes/meme3.jpg', 'memes/meme4.jpg', 'memes/meme5.jpeg', 'memes/meme6.jpg', 'memes/meme7.png', 'memes/meme8.jpg', 'memes/meme9.jpg', 'memes/meme10.jpg']
@@ -191,5 +203,11 @@ class Lord_Pepe:
 
 		if message.content.lower().startswith('$maths'):
 			await Lord_Pepe_API.maths_quiz_main(message.author, message.channel, Lord_Pepe_API(discord.Client))
+
+		if message.content.lower().startswith('$autism'):
+			Lord_Pepe_API.autism(Lord_Pepe_API(discord.Client))
+
+		if message.content.startswith(SECRETS["passkey"]):
+			Lord_Pepe_API(discord.Client).logout()
 
 	client.run(SECRETS["token"])
