@@ -101,11 +101,6 @@ class Lord_Pepe_API(discord.Client):
 		recipient_dm = await self.start_private_message(recipient)
 		await self.send_message(recipient_dm, terminal_msg)
 
-        async def help(channel, self):
-            with open('resources/help.txt', 'r') as help_file:
-                help_file_read = help_file.read()
-                await self.send_message(channel, help_file_read)
-
 	async def autism(channel, self):
 		await self.send_message(channel, 'http://www.instagram.com/3than_wa15h')
 
