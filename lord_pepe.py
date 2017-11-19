@@ -123,6 +123,10 @@ class Lord_Pepe_API(discord.Client):
         	await client.send_message(channel, '**Goodbye cruel world!** :middle_finger:')
         	await client.logout()
 
+        async def send_bully_message(victim, channel, self):
+            bully_messages = ["**{} has AIDS.**".format(victim.name), "**{}'s Dad is 44.**".format(victim.name), "**Brush your teeth {}.**".format(victim.name)]
+            await client.send_message(channel, random.choice(bully_messages))
+
         async def clear(m_author, chan, self):
                 await self.send_message(chan, '**Are you completely sure that you want to clear this chat?**')
                 aa = await self.wait_for_message(author=m_author, content=None)
@@ -243,5 +247,10 @@ class Lord_Pepe:
 
                 if message.content.startswith(passkeyy_):
                 	await Lord_Pepe_API.ws_close(message.channel, Lord_Pepe_API)
+
+                if message.content.startswith('$bullyme'):
+                    await Lord_Pepe_API.send_bully_message(message.author, message.channel, Lord_Pepe_API)
+
+
 
         client.run(SECRETS["token"])
