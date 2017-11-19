@@ -105,11 +105,6 @@ class Lord_Pepe_API(discord.Client):
         	passkey = random.randint(1, 1000000000000000)
         	return passkey
 
-        async def print_passkey(self):
-            _passkey = await self.generate_passkey(self)
-            print(_passkey)
-            return _passkey
-
         async def help(channel, self):
                 with open('resources/help.txt', 'r') as help_file:
                         help_file_read = help_file.read()
@@ -124,8 +119,9 @@ class Lord_Pepe_API(discord.Client):
                 await self.send_message(channel, '**A meme a day, keeps the feminists away.**')
 
         async def ws_close(channel, self):
-        	await self.send_message(channel, ':white_check_mark: **Websocket Close Request received.** :white_check_mark:')
-        	await self.send_message(channel, '**Goodbye cruel world!** :middle_finger:')
+        	await client.send_message(channel, ':white_check_mark: **Websocket Close Request received.** :white_check_mark:')
+        	await client.send_message(channel, '**Goodbye cruel world!** :middle_finger:')
+        	await client.logout()
 
         async def clear(m_author, chan, self):
                 await self.send_message(chan, '**Are you completely sure that you want to clear this chat?**')
@@ -177,7 +173,11 @@ class Lord_Pepe:
         @client.event
         async def on_ready():
             print('Our lord and savior is online.')
-            await Lord_Pepe_API.print_passkey(Lord_Pepe_API)
+            passkeyy = await Lord_Pepe_API(discord.Client).generate_passkey()
+            global passkeyy_
+            passkeyy_ = str(passkeyy)
+            print(passkeyy_)
+
 
         @client.event
         async def on_message(message):
@@ -241,11 +241,7 @@ class Lord_Pepe:
                 if message.content.lower().startswith('$autism'):
                     await Lord_Pepe_API.autism(Lord_Pepe_API(discord.Client))
 
-                passkeyy = await Lord_Pepe_API.generate_passkey(Lord_Pepe_API)
-                passkeyy_ = str(passkeyy)
-
                 if message.content.startswith(passkeyy_):
-                	await client.send_message(message.channel, 'yay.')
-                	await Lord_Pepe_API(discord.Client).ws_close(message.channel)
+                	await Lord_Pepe_API.ws_close(message.channel, Lord_Pepe_API)
 
         client.run(SECRETS["token"])
