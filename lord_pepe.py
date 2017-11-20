@@ -12,104 +12,13 @@ client = discord.Client()
 
 class Lord_Pepe_API(discord.Client):
 
-<<<<<<< HEAD
-	def __init__(self, *args, **kwargs):
-		self.http = client.http
-		self.connection = client.connection
-		self._resolve_destination = client._resolve_destination
-		self.loop = client.loop
-		self._listeners = client._listeners
-
-
-	async def meme(memeIMG, channel, self):
-		await self.send_file(channel, fp=memeIMG)
-		await self.send_message(channel, 'Meme is served.')
-
-	async def commandment(channel, self):
-		commandments = ['1. Always be memeulous.', '2. Never mention 21 or what are those. These are classified as **__DEAD__** memes.', '3. Swear obedience to the dankest, the coolest, the hippest: Lord Pepe.', '4. Your mum is gay.', '5. If you see a feminist, slaughter them.']
-		await self.send_message(channel, random.choice(commandments))
-
-	async def get_follower(id, self):
-		follower = await client.get_user_info(id)
-		return follower
-
-	async def add_follower(channel, ma_id, self):
-		follower_added = await client.get_user_info(ma_id)
-		follower_name = follower_added.name
-		with open('resources/followers.txt', 'a') as followers:
-			print(follower_name, file=followers)
-		await self.send_message(channel, '**You have been registered as a follower of Memeism.**')
-
-	async def return_all_followers(channel, self):
-		with open('resources/followers.txt', 'r') as followers:
-			all_followers = followers.read()
-		await self.send_message(channel, '**Here are all the current followers of memeism:**')
-		await self.send_message(channel, "```{}```".format(all_followers))
-
-	async def get_command_ideas(user_id, self):
-		user = await client.get_user_info(user_id)
-		user_dm = await client.start_private_message(user)
-		await self.send_message(user_dm, '**What is your idea?**')
-		message_ = await self.wait_for_message(author=user, content=None)
-		m_c = message_.content
-		with open('resources/ideas.txt', 'a') as ideas_file:
-			print('Command idea: {}'.format(m_c), file=ideas_file)
-
-	async def devil(channel, content, m_author, self):
-		voice = await self.join_voice_channel(channel)
-		await voice.create_ytdl_player()
-
-	async def maths_quiz(author, channel, self):
-		operators = ['/', '*', '+', '-']
-		randint1 = random.randint(0, 100)
-		randint2 = random.randint(0, 100)
-		randoperator_str = random.choice(operators)
-		if (randoperator_str == '/'):
-			ans = randint1 / randint2
-		elif (randoperator_str == '*'):
-			ans = randint1 * randint2
-		elif (randoperator_str == '+'):
-			ans = randint1 + randint2
-		elif (randoperator_str == '-'):
-			ans = randint1 - randint2
-		await client.send_message(channel, 'What is {} {} {}?'.format(randint1, randoperator_str, randint2))
-		await client.wait_for_message(author=author, content=None)
-		answer = int(message.content)
-		if(answer == ans):
-			await client.send_message(channel, '**Ding!**')
-			++right_answers
-		else:
-			await client.send_message(channel, '**Wrong!**')
-
-	async def maths_quiz_main(author, channel, self):
-		global right_answers
-		right_answers = 0
-		global question_num
-		question_num = 0
-		random_list = [0, 1, 2, 3, 4]
-		for int in random_list:
-			for_running = True
-			await self.maths_quiz(author, channel)
-			++question_num
-		while(for_running):
-			if (question_num >= 5):
-				for_running = False
-				question_num = 0
-
-	async def terminal_to_speech(self):
-		recipient_id = input('UserID>>>')
-		recipient = await self.get_user_info(recipient_id)
-		print('The message will be send to {}.'.format(recipient.name))
-		terminal_msg = input('Message>>>')
-		recipient_dm = await self.start_private_message(recipient)
-		await self.send_message(recipient_dm, terminal_msg)
-=======
         def __init__(self, *args, **kwargs):
                 self.http = client.http
                 self.connection = client.connection
                 self._resolve_destination = client._resolve_destination
                 self.loop = client.loop
                 self._listeners = client._listeners
+                self.SECRETS = json.load(open('resources/SECRETS.json'))
 
 
         async def meme(memeIMG, channel, self):
@@ -146,9 +55,9 @@ class Lord_Pepe_API(discord.Client):
                 with open('resources/ideas.txt', 'a') as ideas_file:
                         print('Command idea: {}'.format(m_c), file=ideas_file)
 
-        async def devil(m_author, self):
-                await self.join_voice_channel(m_author.voice.voice_channel)
-                await self.create_ytdl_player()
+        async def devil(channel, content, m_author, self):
+                voice = await self.join_voice_channel(channel)
+                await voice.create_ytdl_player()
 
         async def maths_quiz(author, channel, self):
                 operators = ['/', '*', '+', '-']
@@ -195,30 +104,30 @@ class Lord_Pepe_API(discord.Client):
                 recipient_dm = await self.start_private_message(recipient)
                 await self.send_message(recipient_dm, terminal_msg)
 
-        async def get_youtube_url_and_play(channel, m_author, search, GOOGLE_API_KEY, self):
-            voice_channel = m_author.voice.voice_channel
-            voice = await client.join_voice_channel(voice_channel)
-            url = "https://www.googleapis.com/youtube/v3/search"
-            with aiohttp.ClientSession() as session:
-                async with session.get(url, params = {"type" : "video",
+        async def get_youtube_url(search, self):
+                GOOGLE_API_KEY = SECRETS["GOOGLE_API_KEY"]
+                url = "https://www.googleapis.com/youtube/v3/search"
+                with aiohttp.ClientSession() as session:
+                        async with session.get(url, params = {"type" : "video",
                                                       "q" : search,
                                                       "part" : "snippet",
                                                       "key" : GOOGLE_API_KEY}) as resp:
-                    data = await resp.json()
+                                data = await resp.json()
 
-            if data["items"]:
-                video = data["items"][0]
-                response = "https://youtu.be/" + video["id"]["videoId"]
-                print(response)
-            else:
-                response = NOT_FOUND
+                if data["items"]:
+                        video = data["items"][0]
+                        response = "https://youtu.be/" + video["id"]["videoId"]
+                        print(response)
+                else:
+                        response = NOT_FOUND
+                return response
 
-            await voice.create_ytdl_player(response)
+        async def join(voice_channel, self)
 
         async def generate_passkey(self):
                 passkey = random.randint(1, 1000000000000000)
                 return passkey
-
+        
         async def autism(channel, self):
                 await self.send_message(channel, 'http://www.instagram.com/3than_wa15h')
 
@@ -239,7 +148,6 @@ class Lord_Pepe_API(discord.Client):
         async def return_memeism_server(channel, self):
                 memeism_server_get_method = await self.get_memeism_server(self)
                 await self.send_message(channel, memeism_server_get_method)
->>>>>>> 04bdb6479bba06e72a0894fe67279efac8d57532
 
         async def help(channel, self):
                 with open('resources/help.txt', 'r') as help_file:
@@ -260,16 +168,16 @@ class Lord_Pepe_API(discord.Client):
                 await client.logout()
 
         async def send_bully_message(victim, channel, self):
-            bully_messages = ["**{} has AIDS.**".format(victim.name), "**{}'s Dad is 44.**".format(victim.name), "**Brush your teeth {}.**".format(victim.name)]
-            await client.send_message(channel, random.choice(bully_messages))
+                bully_messages = ["**{} has AIDS.**".format(victim.name), "**{}'s Dad is 44.**".format(victim.name), "**Brush your teeth {}.**".format(victim.name)]
+                await client.send_message(channel, random.choice(bully_messages))
 
         async def clear(m_author, chan, self):
                 await self.send_message(chan, '**Are you completely sure that you want to clear this chat?**')
                 aa = await self.wait_for_message(author=m_author, content=None)
                 if (aa.content == 'yes'):
                         cll = await self.purge_from(chan,
-                                         limit = 1000,
-                                         check = None)
+                                        limit = 1000,
+                                        check = None)
                 time.sleep(1)
                 rr = await self.send_message(chan, '**{} messages have been cleared.**'.format(len(cll)))
                 time.sleep(2)
@@ -281,7 +189,7 @@ class Lord_Pepe_API(discord.Client):
                 with open ('resources/info.txt', 'r') as info:
                         info_ = info.read()
                         await self.send_message(channel, "```{}```".format(info_))
-
+                        
         async def get_memeism_server(self):
                 memeism_server = 'https://discord.gg/nkmSpS5'
                 return memeism_server
@@ -291,11 +199,11 @@ class Lord_Pepe_API(discord.Client):
                 await client.send_message(channel, memeism_server_get_method)
 
         async def bully_Rickbot(channel, self):
-            Rickbot_bully_messages = ['**Rickbot is a piece of shit.**', '**At least make Rickbot work.**', '**Where did you make Rickbot? The toilet store?**', '**Why does Rickbot exist?**', '**Just kill him.**', "**He's terrible.**"]
-            times = [0, 1, 2, 3, 4, 5]
-            for integer in times:
-                await client.send_message(channel, Rickbot_bully_messages[integer])
-                time.sleep(1)
+                Rickbot_bully_messages = ['**Rickbot is a piece of shit.**', '**At least make Rickbot work.**', '**Where did you make Rickbot? The toilet store?**', '**Why does Rickbot exist?**', '**Just kill him.**', "**He's terrible.**"]
+                times = [0, 1, 2, 3, 4, 5]
+                for integer in times:
+                        await client.send_message(channel, Rickbot_bully_messages[integer])
+                        time.sleep(1)
 
 class CLI:
 
@@ -373,7 +281,12 @@ class Lord_Pepe:
 
                 if message.content.lower().startswith('$play'):
                         search = message.content[6:]
-                        await Lord_Pepe_API.get_youtube_url_and_play(message.channel, message.author, search, GOOGLE_API_KEY, Lord_Pepe_API)
+                        yt_url = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
+                        voice_channel = message.author.voice.voice_channel
+                        voice = await client.join_voice_channel(voice_channel)
+                        YTDL_OPTS = {'format': 'webm[abr>0]/bestaudio/best',}
+                        player = await voice.create_ytdl_player(yt_url)
+                        player.start()
 
                 if message.content.lower().startswith('$maths'):
                         await Lord_Pepe_API.maths_quiz_main(message.author, message.channel, Lord_Pepe_API(discord.Client))
