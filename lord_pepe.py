@@ -236,6 +236,9 @@ class Lord_Pepe:
         @client.event
         async def on_message(message):
 
+            global players
+            players = {}
+
                 if (message.content[:6].lower() == '$meme'):
                         meme = message.content[6:]
                         if meme == '1':
@@ -279,6 +282,7 @@ class Lord_Pepe:
 
                 if message.content.lower().startswith('$play'):
                     if not (client.is_voice_connected(message.server)):
+                        players[message.server.id].stop()
                         search = message.content[6:]
                         yt_url = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
                         voice_channel = message.author.voice.voice_channel
@@ -295,6 +299,7 @@ class Lord_Pepe:
                         voice = client.voice_client_in(message.server)
                         YTDL_OPTS = {'format': 'webm[abr>0]/bestaudio/best',}
                         player = await voice.create_ytdl_player(yt_url, options=YTDL_OPTS)
+                        players[message.server.id] = player
                         player.start()
                         await client.send_message(message.channel, "**Brace your ears. It's playing.**")
 
