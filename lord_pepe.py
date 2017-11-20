@@ -292,14 +292,14 @@ class Lord_Pepe:
                         search = message.content[6:]
                         yt_url = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
                         voice_channel = message.author.voice.voice_channel
-                        global voice
-                        voice = await client.voice.client_in(message.server)
+                        voice = client.voice_client_in(message.server)
                         YTDL_OPTS = {'format': 'webm[abr>0]/bestaudio/best',}
                         player = await voice.create_ytdl_player(yt_url, options=YTDL_OPTS)
                         player.start()
                         await client.send_message(message.channel, "**Brace your ears. It's playing.**")
 
                 if message.content.lower().startswith('$quit'):
+                    voice = client.voice_client_in(message.server)
                     voice.disconnect()
 
                 if message.content.lower().startswith('$maths'):
