@@ -53,9 +53,9 @@ class Lord_Pepe_API(discord.Client):
 		with open('resources/ideas.txt', 'a') as ideas_file:
 			print('Command idea: {}'.format(m_c), file=ideas_file)
 
-	async def devil(m_author, self):
-		await self.join_voice_channel(m_author.voice.voice_channel)
-		await self.create_ytdl_player()
+	async def devil(channel, content, m_author, self):
+		voice = await self.join_voice_channel(channel)
+		await voice.create_ytdl_player()
 
 	async def maths_quiz(author, channel, self):
 		operators = ['/', '*', '+', '-']
