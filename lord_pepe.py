@@ -278,46 +278,56 @@ class Lord_Pepe:
                         await Lord_Pepe_API.get_command_ideas(message.author.id, Lord_Pepe_API(discord.Client))
 
                 if message.content.lower().startswith('$play'):
-                        if not (client.is_voice_connected(message.server)):
-                            if (player.is_playing):
-                                player.stop()
-                                search = message.content[6:]
-                                yt_url = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
-                                voice_channel = message.author.voice.voice_channel
-                                voice = await client.join_voice_channel(voice_channel)
-                                YTDL_OPTS = {'format': 'webm[abr>0]/bestaudio/best',}
-                                player = await voice.create_ytdl_player(yt_url, options=YTDL_OPTS)
-                                player.start()
-                                await client.send_message(message.channel, "**Brace your ears. It's playing.**")
-                            else:
-                                search = message.content[6:]
-                                yt_url = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
-                                voice_channel = message.author.voice.voice_channel
-                                voice = await client.join_voice_channel(voice_channel)
-                                YTDL_OPTS = {'format': 'webm[abr>0]/bestaudio/best',}
-                                player = await voice.create_ytdl_player(yt_url, options=YTDL_OPTS)
-                                player.start()
-                                await client.send_message(message.channel, "**Brace your ears. It's playing.**")
+                    if (client.is_voice_connected):
+                        voice = client.voice.client_in(message.server)
+                        global player
+                        player = await voice.create_ytdl_player()
+                    else:
+                        voice = client.join_voice_channel(message.author.voice.voice_channel)
+
+                    if not (client.is_voice_connected(message.server)):
+                        player = await client.create_ytdl_player()
+
+                        if (player.is_playing):
+                            player.stop()
+                            search = message.content[6:]
+                            yt_url = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
+                            voice_channel = message.author.voice.voice_channel
+                            voice = await client.join_voice_channel(voice_channel)
+                            YTDL_OPTS = {'format': 'webm[abr>0]/bestaudio/best',}
+                            player = await voice.create_ytdl_player(yt_url, options=YTDL_OPTS)
+                            player.start()
+                            await client.send_message(message.channel, "**Brace your ears. It's playing.**")
                         else:
-                            if (player.is_playing):
-                                player.stop()
-                                search = message.content[6:]
-                                yt_url = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
-                                voice_channel = message.author.voice.voice_channel
-                                voice = await client.voice.client_in(message.server)
-                                YTDL_OPTS = {'format': 'webm[abr>0]/bestaudio/best',}
-                                player = await voice.create_ytdl_player(yt_url, options=YTDL_OPTS)
-                                player.start()
-                                await client.send_message(message.channel, "**Brace your ears. It's playing.**")
-                            else:
-                                search = message.content[6:]
-                                yt_url = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
-                                voice_channel = message.author.voice.voice_channel
-                                voice = await client.voice.client_in(message.server)
-                                YTDL_OPTS = {'format': 'webm[abr>0]/bestaudio/best',}
-                                player = await voice.create_ytdl_player(yt_url, options=YTDL_OPTS)
-                                player.start()
-                                await client.send_message(message.channel, "**Brace your ears. It's playing.**")
+                            search = message.content[6:]
+                            yt_url = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
+                            voice_channel = message.author.voice.voice_channel
+                            voice = await client.join_voice_channel(voice_channel)
+                            YTDL_OPTS = {'format': 'webm[abr>0]/bestaudio/best',}
+                            player = await voice.create_ytdl_player(yt_url, options=YTDL_OPTS)
+                            player.start()
+                            await client.send_message(message.channel, "**Brace your ears. It's playing.**")
+                    else:
+                        
+                        if (player.is_playing):
+                            player.stop()
+                            search = message.content[6:]
+                            yt_url = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
+                            voice_channel = message.author.voice.voice_channel
+                            voice = await client.voice.client_in(message.server)
+                            YTDL_OPTS = {'format': 'webm[abr>0]/bestaudio/best',}
+                            player = await voice.create_ytdl_player(yt_url, options=YTDL_OPTS)
+                            player.start()
+                            await client.send_message(message.channel, "**Brace your ears. It's playing.**")
+                        else:
+                            search = message.content[6:]
+                            yt_url = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
+                            voice_channel = message.author.voice.voice_channel
+                            voice = await client.voice.client_in(message.server)
+                            YTDL_OPTS = {'format': 'webm[abr>0]/bestaudio/best',}
+                            player = await voice.create_ytdl_player(yt_url, options=YTDL_OPTS)
+                            player.start()
+                            await client.send_message(message.channel, "**Brace your ears. It's playing.**")
 
 
                 if message.content.lower().startswith('$maths'):
