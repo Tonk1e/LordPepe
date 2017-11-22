@@ -39,7 +39,7 @@ class Lord_Pepe_API(discord.Client):
                 with open('resources/followers.txt', 'a') as followers:
                         print(follower_name, file=followers)
                 await self.send_message(channel, '**You have been registered as a follower of Memeism.**')
-
+                
         async def return_all_followers(channel, self):
                 with open('resources/followers.txt', 'r') as followers:
                         all_followers = followers.read()
@@ -236,30 +236,33 @@ class Lord_Pepe:
         @client.event
         async def on_message(message):
 
-                if (message.content[:6].lower() == '$meme'):
-                        meme = message.content[6:]
-                        if meme == '1':
-                                memeIMG = 'memes/meme1.jpg'
-                        if meme == '2':
-                                memeIMG = 'memes/meme2.jpeg'
-                        if meme == '3':
-                                memeIMG = 'memes/meme3.jpg'
-                        if meme == '4':
-                                memeIMG = 'memes/meme4.jpg'
-                        if meme == '5':
-                                memeIMG = 'memes/meme5.jpeg'
-                        if meme == '6':
-                                memeIMG = 'memes/meme6.jpg'
-                        if meme == '7':
-                                memeIMG = 'memes/meme7.png'
-                        if meme == '8':
-                                memeIMG = 'memes/meme8.jpg'
-                        if meme == '9':
-                                memeIMG = 'memes/meme9.jpg'
-                        if meme == '10':
-                                memeIMG = 'memes/meme10.jpg'
+                global players
+                players = {}
 
-                        await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API(discord.Client))
+                if (message.content[:6].lower() == '$meme'):
+                    meme = message.content[6:]
+                    if meme == '1':
+                            memeIMG = 'memes/meme1.jpg'
+                    if meme == '2':
+                            memeIMG = 'memes/meme2.jpeg'
+                    if meme == '3':
+                            memeIMG = 'memes/meme3.jpg'
+                    if meme == '4':
+                            memeIMG = 'memes/meme4.jpg'
+                    if meme == '5':
+                            memeIMG = 'memes/meme5.jpeg'
+                    if meme == '6':
+                            memeIMG = 'memes/meme6.jpg'
+                    if meme == '7':
+                            memeIMG = 'memes/meme7.png'
+                    if meme == '8':
+                            memeIMG = 'memes/meme8.jpg'
+                    if meme == '9':
+                            memeIMG = 'memes/meme9.jpg'
+                    if meme == '10':
+                            memeIMG = 'memes/meme10.jpg'
+
+                    await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API(discord.Client))
 
                 if (message.content.lower() == '$randmeme'):
                         await Lord_Pepe_API.random_meme(message.channel, Lord_Pepe_API(discord.Client))
@@ -278,6 +281,7 @@ class Lord_Pepe:
                         await Lord_Pepe_API.get_command_ideas(message.author.id, Lord_Pepe_API(discord.Client))
 
                 if message.content.lower().startswith('$play'):
+<<<<<<< HEAD
                     if (client.is_voice_connected):
                         voice = client.voice.client_in(message.server)
                         global player
@@ -298,6 +302,54 @@ class Lord_Pepe:
                             player = await voice.create_ytdl_player(yt_url, options=YTDL_OPTS)
                             player.start()
                             await client.send_message(message.channel, "**Brace your ears. It's playing.**")
+=======
+<<<<<<< HEAD
+                    if not (client.is_voice_connected(message.server)):
+                        global voice
+                        voice = await client.join_voice_channel(message.author.voice.voice_channel)
+                        search = message.content[6:]
+                        yt_url = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
+                        YTDL_OPTS = {'format': 'webm[abr>0]/bestaudio/best',}
+                        global player
+                        player = await voice.create_ytdl_player(yt_url, options=YTDL_OPTS)
+                        player.start()
+                        await client.send_message(message.channel, "**Brace your ears. It's playing.**")
+                    elif (client.is_voice_connected(message.server)):
+                        player.stop()
+                        print('Stopped previous stream.')
+                        search = message.content[6:]
+                        yt_url = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
+                        voice_channel = message.author.voice.voice_channel
+                        YTDL_OPTS = {'format': 'webm[abr>0]/bestaudio/best',}
+                        player = await voice.create_ytdl_player(yt_url, options=YTDL_OPTS)
+                        player.start()
+                        await client.send_message(message.channel, "**Brace your ears. It's playing.**")
+
+                if message.content.lower().startswith('$quit'):
+                    voice = client.voice_client_in(message.server)
+                    voice.disconnect()
+=======
+                        if not (client.is_voice_connected(message.server)):
+                            if (player.is_playing):
+                                player.stop()
+                                search = message.content[6:]
+                                yt_url = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
+                                voice_channel = message.author.voice.voice_channel
+                                voice = await client.join_voice_channel(voice_channel)
+                                YTDL_OPTS = {'format': 'webm[abr>0]/bestaudio/best',}
+                                player = await voice.create_ytdl_player(yt_url, options=YTDL_OPTS)
+                                player.start()
+                                await client.send_message(message.channel, "**Brace your ears. It's playing.**")
+                            else:
+                                search = message.content[6:]
+                                yt_url = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
+                                voice_channel = message.author.voice.voice_channel
+                                voice = await client.join_voice_channel(voice_channel)
+                                YTDL_OPTS = {'format': 'webm[abr>0]/bestaudio/best',}
+                                player = await voice.create_ytdl_player(yt_url, options=YTDL_OPTS)
+                                player.start()
+                                await client.send_message(message.channel, "**Brace your ears. It's playing.**")
+>>>>>>> 7686a4294c55e975e2a6d41f6d5ca9e6b18f718f
                         else:
                             search = message.content[6:]
                             yt_url = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
@@ -329,6 +381,7 @@ class Lord_Pepe:
                             player.start()
                             await client.send_message(message.channel, "**Brace your ears. It's playing.**")
 
+>>>>>>> 2a11539dba80bf4ce2369f8d68e7e827c49d98ef
 
                 if message.content.lower().startswith('$maths'):
                         await Lord_Pepe_API.maths_quiz_main(message.author, message.channel, Lord_Pepe_API(discord.Client))
