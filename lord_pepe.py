@@ -1,3 +1,4 @@
+
 import os
 import discord
 import asyncio
@@ -11,6 +12,14 @@ import youtube_dl
 client = discord.Client()
 
 class Lord_Pepe_API(discord.Client):
+
+        DANK_POINTS_FILE = open('resources/dank_points.json')
+        global DANK_POINTS
+        DANK_POINTS = json.load(DANK_POINTS_FILE)
+        ADMINS_FILE = open('resources/admins.json')
+        global ADMINS
+        ADMINS = json.load(ADMINS_FILE)
+
 
         def __init__(self, *args, **kwargs):
                 self.http = client.http
@@ -104,6 +113,130 @@ class Lord_Pepe_API(discord.Client):
                 terminal_msg = input('Message>>>')
                 recipient_dm = await self.start_private_message(recipient)
                 await self.send_message(recipient_dm, terminal_msg)
+
+
+        async def register_forDankPoints(user_name, user_id, message_channel_id, self):
+            if not ("{}/{}".format(user_name, user_id) in DANK_POINTS):
+                DANK_POINTS["{}/{}".format(user_name, user_id)] = 0
+                DANK_POINTS["REGISTERED_USERS"] = DANK_POINTS["REGISTERED_USERS"] + 1
+                with open ('resources/dank_points.json', 'w') as DANKK_POINTS_FILE:
+                    json.dump(DANK_POINTS, DANKK_POINTS_FILE)
+                await client.send_message(discord.Object(message_channel_id), '**You have been registered for dank points. Yay.**')
+            else:
+                await client.send_message(discord.Object(message_channel_id), '**You already have an account you retard.**')
+
+
+        async def add_dankPoints(user, self):
+            if ("{}/{}".format(user.name, user.id) in DANK_POINTS):
+                DANK_POINTS["{}/{}".format(user_name, user_id)] = DANK_POINTS["{}/{}".format(user.name, user.id)] + rand.randint(1, 100)
+
+        async def dank_quiz(m_author, channel, self):
+            if ("{}/{}".format(m_author.name, m_author.id in DANK_POINTS)):
+                questions = ["**Is 21 a good meme?**", "**Should Jake Paul die in a hole?**", "**Are transgeneders real?**", "**Was 9/11 a social experiment?**"]
+                rand_question = random.choice(questions)
+                await client.send_message(channel, rand_question)
+                if (rand_question == questions[0]):
+                    ans = await client.wait_for_message(author=m_author)
+                    if (ans.content.lower() == 'no'):
+                        await client.send_message(channel, "**Ding ding!**")
+                        amount_of_points = random.randint(1, 15)
+                        await client.send_message(channel, f"**You have been awarded {amount_of_points} Dank Points!**")
+                        DANK_POINTS["{}/{}".format(m_author.name, m_author.id)] = DANK_POINTS["{}/{}".format(m_author.name, m_author.id)] + amount_of_points
+                        
+                    else:
+                        await client.send_message(channel, "**You got it wrong you pleb.**")
+                        await client.send_message(channel, "**You got no Dank Points.**")
+
+                if (rand_question == questions[1]):
+                    ans = await client.wait_for_message(author=m_author)
+                    if (ans.content.lower() == 'yes'):
+                        await client.send_message(channel, "**Ding ding!**")
+                        amount_of_points = random.randint(1, 15)
+                        await client.send_message(channel, f"**You have been awarded {amount_of_points} Dank Points!**")
+                        DANK_POINTS["{}/{}".format(m_author.name, m_author.id)] = DANK_POINTS["{}/{}".format(m_author.name, m_author.id)] + amount_of_points
+                        with open ('resources/dank_points.json', 'w') as DANKK_POINTS_FILE:
+                            json.dump(DANK_POINTS, DANKK_POINTS_FILE)
+                    else:
+                        await client.send_message(channel, "**You got it wrong you pleb.*")
+                        await client.send_message(channel, "**You got no Dank Points.**")
+
+                if (rand_question == questions[2]):
+                    ans = await client.wait_for_message(author=m_author)
+                    if (ans.content.lower() == 'no'):
+                        await client.send_message(channel, "**Ding ding!**")
+                        amount_of_points = random.randint(1, 15)
+                        await client.send_message(channel, f"**You have been awarded {amount_of_points} Dank Points!**")
+                        DANK_POINTS["{}/{}".format(m_author.name, m_author.id)] = DANK_POINTS["{}/{}".format(m_author.name, m_author.id)] + amount_of_points
+                        with open ('resources/dank_points.json', 'w') as DANKK_POINTS_FILE:
+                            json.dump(DANK_POINTS, DANKK_POINTS_FILE)
+                    else:
+                        await client.send_message(channel, "**You got it wrong you pleb.*")
+                        await client.send_message(channel, "**You got no Dank Points.**")
+
+                if (rand_question == questions[3]):
+                    ans = await client.wait_for_message(author=m_author)
+                    if (ans.content.lower() == 'yes'):
+                        await client.send_message(channel, "**Ding ding!**")
+                        amount_of_points = random.randint(1, 15)
+                        await client.send_message(channel, f"**You have been awarded {amount_of_points} Dank Points!**")
+                        DANK_POINTS["{}/{}".format(m_author.name, m_author.id)] = DANK_POINTS["{}/{}".format(m_author.name, m_author.id)] + amount_of_points
+                        with open ('resources/dank_points.json', 'w') as DANKK_POINTS_FILE:
+                            json.dump(DANK_POINTS, DANKK_POINTS_FILE)
+                    else:
+                        await client.send_message(channel, "**You got it wrong you pleb.*")
+                        await client.send_message(channel, "**You got no Dank Points.**")
+            else:
+                await client.send_message(channel, '**You do not have a Dank Points account.**')
+                await client.send_message(channel, "**Please create one with** `$d-register`.")
+
+        async def dank_balance(channel, m_author, self):
+            if (f"{m_author.name}/{m_author.id}" in DANK_POINTS):
+                balance = DANK_POINTS[f"{m_author.name}/{m_author.id}"]
+                em = discord.Embed()
+                em.title = f"{m_author.name}'s Dank Points Account"
+                em.add_field(name="Balance:", value=f"{balance} Dank Points.")
+                await client.send_message(channel, embed=em)
+            else:
+                await client.send_message(channel, "**You do not have a Dank Points account**")
+                await client.send_message(channel, "**Please create one with** `$d-register`.")
+
+        async def dank_donate(donation_amount, donate_recipient, channel, m_author, self):
+            if (f"{m_author.name}/{m_author.id}" in DANK_POINTS):
+                balance1 = DANK_POINTS[f"{m_author.name}/{m_author.id}"]
+                balance2 = DANK_POINTS[f"{donate_recipient.name}/{donate_recipient.id}"]
+                if (balance1 - donation_amount > 0):
+                    DANK_POINTS[f"{m_author.name}/{m_author.id}"] = DANK_POINTS[f"{m_author.name}/{m_author.id}"] - donation_amount
+                    DANK_POINTS[f"{donate_recipient.name}/{donate_recipient.id}"] = DANK_POINTS[f"{donate_recipient.name}/{donate_recipient.id}"] + donation_amount
+                    with open ('resources/dank_points.json', 'w') as DANKK_POINTS_FILE:
+                        json.dump(DANK_POINTS, DANKK_POINTS_FILE)
+                    await client.send_message(channel, f"**{donation_amount} Dank Points were transferred from {m_author.name}'s account to {donate_recipient.name}'s account.**")
+                    await self.dank_balance(channel, donate_recipient, self)
+                else:
+                    await client.send_message(channel, "**You do not have sufficient funds to complete this action.**")
+            else:
+                await client.send_message(channel, "**You do not have a Dank Points account**")
+                await client.send_message(channel, "**Please create one with** `$d-register`.")
+
+        async def dank_shop(channel, m_author, self):
+            if (f"{m_author.name}/{m_author.id}" in DANK_POINTS):
+                shop = discord.Embed()
+                shop.title = "Dank Shop:"
+                shop.add_field(name="1. Admin:", value="Grants you admin permissions. Price: 10, 000 DP.")
+                await client.send_message(channel, embed=shop)
+                await client.send_message(channel, "**Please enter the number of dat ting you wanna buy.**")
+                bought_number = await client.wait_for_message(author=m_author)
+                if (bought_number.content == '1'):
+                    balance = DANK_POINTS[f"{m_author.name}/{m_author.id}"]
+                    if (balance >= 10000):
+                        ADMINS[f"{m_author.id}"] = "true"
+                        balance = balance - 10000
+                        with open ('resources/admins.json', 'w') as admins_file:
+                            json.dump(admins_file, ADMINS)
+                        with open ('resources/dank_points.json', 'w') as dank_points_file:
+                            json.dump(dank_points_file, DANK_POINTS)                   
+                    else:
+                        await client.send_message(channel, "**You do not have sufficient funds to complete this action.**")
+            
 
         async def get_youtube_url(search, self):
                 GOOGLE_API_KEY = SECRETS["GOOGLE_API_KEY"]
@@ -330,6 +463,27 @@ class Lord_Pepe:
 
                 if message.content.startswith('$rickbot'):
                     await Lord_Pepe_API.bully_Rickbot(discord.Object('378954661648007168'), Lord_Pepe_API)
+
+                if message.content.startswith('$d-register'):
+                    await Lord_Pepe_API.register_forDankPoints(message.author.name, message.author.id, message.channel.id, Lord_Pepe_API)
+
+                if message.content.startswith('$d-quiz'):
+                    await Lord_Pepe_API.dank_quiz(message.author, message.channel, Lord_Pepe_API)
+
+                if message.content.startswith('$d-balance'):
+                    await Lord_Pepe_API.dank_balance(message.channel, message.author, Lord_Pepe_API)
+
+                if message.content.startswith('$d-donate'):
+                    donation_amount_str = message.content[10:]
+                    donation_amount = int(donation_amount_str)
+                    await client.send_message(message.channel, "**Please provide the ID of the user.**")
+                    get_user = await client.wait_for_message(author=message.author)
+                    user_id = get_user.content
+                    user = await client.get_user_info(user_id)
+                    await Lord_Pepe_API.dank_donate(donation_amount, user, message.channel, message.author, Lord_Pepe_API)
+
+                if message.content.startswith('$d-shop'):
+                    await Lord_Pepe_API.dank_shop(message.channel, message.author, Lord_Pepe_API)
 
 
         client.run(SECRETS["token"])
