@@ -10,11 +10,11 @@ client = discord.Client()
 class Lord_Pepe_API(discord.Client):
 
         DANK_POINTS_FILE = open('resources/dank_points.json')
-        global DANK_POINTS
         DANK_POINTS = json.load(DANK_POINTS_FILE)
         ADMINS_FILE = open('resources/admins.json')
-        global ADMINS
         ADMINS = json.load(ADMINS_FILE)
+        BANNED_PLAYERS_FILE = open('resources/banned.json')
+        BANNED_PLAYERS = json.load(BANNED_PLAYERS_FILE)
 
 
         def __init__(self, *args, **kwargs):
@@ -129,7 +129,7 @@ class Lord_Pepe_API(discord.Client):
 
         async def dank_quiz(m_author, channel, self):
             if ("{}/{}".format(m_author.name, m_author.id in DANK_POINTS)):
-                questions = ["**Is 21 a good meme?**", "**Should Jake Paul die in a hole?**", "**Are transgeneders real?**", "**Was 9/11 a social experiment?**"]
+                questions = ["**Is 21 a good meme?**", "**Should Jake Paul die in a hole?**", "**Are transgenders real?**", "**Was 9/11 a social experiment?**"]
                 rand_question = random.choice(questions)
                 await client.send_message(channel, rand_question)
                 if (rand_question == questions[0]):
@@ -154,7 +154,7 @@ class Lord_Pepe_API(discord.Client):
                         with open ('resources/dank_points.json', 'w') as DANKK_POINTS_FILE:
                             json.dump(DANK_POINTS, DANKK_POINTS_FILE)
                     else:
-                        await client.send_message(channel, "**You got it wrong you pleb.*")
+                        await client.send_message(channel, "**You got it wrong you pleb.**")
                         await client.send_message(channel, "**You got no Dank Points.**")
 
                 if (rand_question == questions[2]):
@@ -167,7 +167,7 @@ class Lord_Pepe_API(discord.Client):
                         with open ('resources/dank_points.json', 'w') as DANKK_POINTS_FILE:
                             json.dump(DANK_POINTS, DANKK_POINTS_FILE)
                     else:
-                        await client.send_message(channel, "**You got it wrong you pleb.*")
+                        await client.send_message(channel, "**You got it wrong you pleb.**")
                         await client.send_message(channel, "**You got no Dank Points.**")
 
                 if (rand_question == questions[3]):
@@ -180,7 +180,7 @@ class Lord_Pepe_API(discord.Client):
                         with open ('resources/dank_points.json', 'w') as DANKK_POINTS_FILE:
                             json.dump(DANK_POINTS, DANKK_POINTS_FILE)
                     else:
-                        await client.send_message(channel, "**You got it wrong you pleb.*")
+                        await client.send_message(channel, "**You got it wrong you pleb.**")
                         await client.send_message(channel, "**You got no Dank Points.**")
             else:
                 await client.send_message(channel, '**You do not have a Dank Points account.**')
@@ -191,8 +191,12 @@ class Lord_Pepe_API(discord.Client):
                 balance = DANK_POINTS[f"{m_author.name}/{m_author.id}"]
                 em = discord.Embed()
                 em.title = f"{m_author.name}'s Dank Points Account"
-                em.add_field(name="Balance:", value=f"{balance} Dank Points.")
-                await client.send_message(channel, embed=em)
+                if (balance == 1):
+                    em.add_field(name="Balance:", value=f"{balance} Dank Point.")
+                    await client.send_message(channel, embed=em)
+                else:
+                    em.add_field(name="Balance:", value=f"{balance} Dank Points.")
+                    await client.send_message(channel, embed=em)
             else:
                 await client.send_message(channel, "**You do not have a Dank Points account**")
                 await client.send_message(channel, "**Please create one with** `$d-register`.")
@@ -228,18 +232,17 @@ class Lord_Pepe_API(discord.Client):
                         ADMINS[f"{m_author.id}"] = "true"
                         balance = balance - 10000
                         with open ('resources/admins.json', 'w') as admins_file:
-                            json.dump(admins_file, ADMINS)
+                            json.dump(ADMINS, admins_file)
                         with open ('resources/dank_points.json', 'w') as dank_points_file:
-                            json.dump(dank_points_file, DANK_POINTS)                   
+                            json.dump(DANK_POINTS, dank_points_file)                   
                     else:
                         await client.send_message(channel, "**You do not have sufficient funds to complete this action.**")
-            
-
+             
         async def get_youtube_url(search, self):
                 GOOGLE_API_KEY = SECRETS["GOOGLE_API_KEY"]
                 url = "https://www.googleapis.com/youtube/v3/search"
                 with aiohttp.ClientSession() as session:
-                        async with session.get(url, params = {"type" : "video",
+                        async with session.get(url, params={"type" : "video",
                                                       "q" : search,
                                                       "part" : "snippet",
                                                       "key" : GOOGLE_API_KEY}) as resp:
@@ -253,7 +256,7 @@ class Lord_Pepe_API(discord.Client):
                         response = NOT_FOUND
                 return response
 
-        async def generate_passkey(self):
+        async def generate_passkey(self): 
                 passkey = random.randint(1, 1000000000000000)
                 return passkey
         
@@ -301,7 +304,7 @@ class Lord_Pepe_API(discord.Client):
                                         limit = 1000,
                                         check = None)
                 time.sleep(1)
-                rr = await self.send_message(chan, '**{} messages have been cleared.**'.format(len(cll)))
+                rr = await self.send_message(channel, '**{} messages have been cleared.**'.format(len(cll)))
                 time.sleep(2)
                 await self.delete_message(rr)
                 if (aa.content == 'no'):
@@ -322,6 +325,13 @@ class Lord_Pepe_API(discord.Client):
                 for integer in times:
                         await client.send_message(channel, Rickbot_bully_messages[integer])
                         time.sleep(1)
+
+        async def banUser(user, self):
+            user_dm = await client.start_private_message(user)
+            await client.send_message(user_dm, "**Well done. You've been banned you prick.**")
+            BANNED_PLAYERS[user.id] = "banned"
+            with open('resources/banned.json', 'w') as banned_players_file:
+                json.dump(BANNED_PLAYERS, banned_players_file)
 
 class CLI:
 
@@ -359,49 +369,67 @@ class Lord_Pepe:
                 global players
                 players = {}
 
-                if (message.content[:6].lower() == '$meme'):
+                if (message.content.lower().startswith('$meme') and not message.author.id in BANNED_PLAYERS):
                     meme = message.content[6:]
                     if meme == '1':
                             memeIMG = 'memes/meme1.jpg'
-                    if meme == '2':
+                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API(discord.Client))
+                    elif meme == '2':
                             memeIMG = 'memes/meme2.jpeg'
-                    if meme == '3':
+                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API(discord.Client))
+                    elif meme == '3':
                             memeIMG = 'memes/meme3.jpg'
-                    if meme == '4':
+                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API(discord.Client))
+                    elif meme == '4':
                             memeIMG = 'memes/meme4.jpg'
-                    if meme == '5':
+                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API(discord.Client))
+                    elif meme == '5':
                             memeIMG = 'memes/meme5.jpeg'
-                    if meme == '6':
+                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API(discord.Client))
+                    elif meme == '6':
                             memeIMG = 'memes/meme6.jpg'
-                    if meme == '7':
+                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API(discord.Client))
+                    elif meme == '7':
                             memeIMG = 'memes/meme7.png'
-                    if meme == '8':
+                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API(discord.Client))
+                    elif meme == '8':
                             memeIMG = 'memes/meme8.jpg'
-                    if meme == '9':
+                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API(discord.Client))
+                    elif meme == '9':
                             memeIMG = 'memes/meme9.jpg'
-                    if meme == '10':
+                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API(discord.Client))
+                    elif meme == '10':
                             memeIMG = 'memes/meme10.jpg'
+                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API(discord.Client))
 
-                    await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API(discord.Client))
+                    elif meme == None:
+                        await client.send_message(message.channel, "**You didn't specify a meme you pleb.**")
 
-                if (message.content.lower() == '$randmeme'):
+                    else:
+                        await client.send_message(message.channel, "**An error ocurred. It's your fault you pleb.**")
+
+                if (message.content.lower() == '$randmeme' and not message.author.id in BANNED_PLAYERS):
                         await Lord_Pepe_API.random_meme(message.channel, Lord_Pepe_API(discord.Client))
 
-                if message.content.lower().startswith('$info'):
+                if message.content.lower().startswith('$info') and not message.author.id in BANNED_PLAYERS:
                         await Lord_Pepe_API.memeism_info(message.channel, Lord_Pepe_API(discord.Client))
 
-                if message.content.lower().startswith('$register'):
+                if message.content.lower().startswith('$register') and not message.author.id in BANNED_PLAYERS:
                         ma_id = message.author.id
                         await Lord_Pepe_API.add_follower(message.channel, ma_id, Lord_Pepe_API(discord.Client))
 
-                if message.content.lower().startswith('$all_followers'):
+                if message.content.lower().startswith('$all_followers') and not message.author.id in BANNED_PLAYERS:
                         await Lord_Pepe_API.return_all_followers(message.channel, Lord_Pepe_API(discord.Client))
 
-                if message.content.lower().startswith('$idea'):
+                if message.content.lower().startswith('$idea') and not message.author.id in BANNED_PLAYERS:
                         await Lord_Pepe_API.get_command_ideas(message.author.id, Lord_Pepe_API(discord.Client))
 
+<<<<<<< HEAD
                 if message.content.lower().startswith('$play'):
 
+=======
+                if message.content.lower().startswith('$play') and not message.author.id in BANNED_PLAYERS:
+>>>>>>> 3ad32133a7a679bba680c1ca7a1ee63e96b5da0c
                     if not (client.is_voice_connected(message.server)):
                         global voice
                         voice = await client.join_voice_channel(message.author.voice.voice_channel)
@@ -422,43 +450,52 @@ class Lord_Pepe:
                         player.start()
                         await client.send_message(message.channel, "**Brace your ears. It's playing.**")
 
+<<<<<<< HEAD
                 if message.content.lower().startswith('$quit'):
                     voice_client = client.voice_client_in(message.server)
                     voice.disconnect()
 
                 if message.content.lower().startswith('$maths'):
+=======
+                if message.content.lower().startswith('$quit') and not message.author.id in BANNED_PLAYERS:
+                    voice = client.voice_client_in(message.server)
+                    voice.disconnect()
+
+
+                if message.content.lower().startswith('$maths') and not message.author.id in BANNED_PLAYERS:
+>>>>>>> 3ad32133a7a679bba680c1ca7a1ee63e96b5da0c
                         await Lord_Pepe_API.maths_quiz_main(message.author, message.channel, Lord_Pepe_API(discord.Client))
 
-                if message.content.lower().startswith('$clear'):
+                if message.content.lower().startswith('$clear') and not message.author.id in BANNED_PLAYERS:
                         m_author = message.author
                         chan = message.channel
                         await Lord_Pepe_API.clear(m_author, chan, Lord_Pepe_API(discord.Client))
 
-                if message.content.lower().startswith('$autism'):
+                if message.content.lower().startswith('$autism') and not message.author.id in BANNED_PLAYERS:
                     await Lord_Pepe_API.autism(message.channel, Lord_Pepe_API(discord.Client))
 
                 if message.content.startswith(passkeyy_) and not message.author.id == '380095549149544449':
                         await Lord_Pepe_API.ws_close(message.channel, Lord_Pepe_API)
 
-                if message.content.startswith('$bullyme'):
+                if message.content.startswith('$bullyme') and not message.author.id in BANNED_PLAYERS:
                     await Lord_Pepe_API.send_bully_message(message.author, message.channel, Lord_Pepe_API)
 
-                if (message.content.lower() == '$memeism'):
+                if (message.content.lower() == '$memeism') and not message.author.id in BANNED_PLAYERS:
                     await Lord_Pepe_API.return_memeism_server(message.channel, Lord_Pepe_API)
 
-                if message.content.startswith('$rickbot'):
+                if message.content.startswith('$rickbot') and not message.author.id in BANNED_PLAYERS:
                     await Lord_Pepe_API.bully_Rickbot(discord.Object('378954661648007168'), Lord_Pepe_API)
 
-                if message.content.startswith('$d-register'):
+                if message.content.startswith('$d-register') and not message.author.id in BANNED_PLAYERS:
                     await Lord_Pepe_API.register_forDankPoints(message.author.name, message.author.id, message.channel.id, Lord_Pepe_API)
 
-                if message.content.startswith('$d-quiz'):
+                if message.content.startswith('$d-quiz') and not message.author.id in BANNED_PLAYERS:
                     await Lord_Pepe_API.dank_quiz(message.author, message.channel, Lord_Pepe_API)
 
-                if message.content.startswith('$d-balance'):
+                if message.content.startswith('$d-balance') and not message.author.id in BANNED_PLAYERS:
                     await Lord_Pepe_API.dank_balance(message.channel, message.author, Lord_Pepe_API)
 
-                if message.content.startswith('$d-donate'):
+                if message.content.startswith('$d-donate') and not message.author.id in BANNED_PLAYERS:
                     donation_amount_str = message.content[10:]
                     donation_amount = int(donation_amount_str)
                     await client.send_message(message.channel, "**Please provide the ID of the user.**")
@@ -467,13 +504,31 @@ class Lord_Pepe:
                     user = await client.get_user_info(user_id)
                     await Lord_Pepe_API.dank_donate(donation_amount, user, message.channel, message.author, Lord_Pepe_API)
 
-                if message.content.startswith('$d-shop'):
+                if message.content.startswith('$d-shop') and not message.author.id in BANNED_PLAYERS:
                     await Lord_Pepe_API.dank_shop(message.channel, message.author, Lord_Pepe_API)
 
+<<<<<<< HEAD
                 if message.content.startswith('$yt'):
                     search = message.content[4:]
                     response = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
                     await client.send_message(message.channel, response)
+=======
+                if message.content.startswith('$yt') and not message.author.id in BANNED_PLAYERS:
+                    search = message.content[4:]
+                    url = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
+                    await client.send_message(message.channel, url)
+
+                if message.content.startswith('$ban') and message.author.id == '292556142952054794':
+                    await client.send_message(message.channel, "**Please the specify the ID of the user.**")
+                    global ID_message
+                    ID_message = await client.wait_for_message(author=message.author)
+                    if (ID_message.content == None):
+                        await client.send_message(message.channel, "**Specify a god damn user then.**")
+                    else:
+                        banned_user = await client.get_user_info(ID_message.content)
+                        await Lord_Pepe_API.banUser(banned_user, Lord_Pepe_API)
+                        await client.send_message(message.channel, "**It has been dealt with.**")
+>>>>>>> 3ad32133a7a679bba680c1ca7a1ee63e96b5da0c
 
 
         client.run(SECRETS["token"])
