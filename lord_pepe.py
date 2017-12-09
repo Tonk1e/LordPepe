@@ -1,13 +1,9 @@
-
-import os
 import discord
 import asyncio
 import random
-import operator
 import json
 import time
 import aiohttp
-import youtube_dl
 
 client = discord.Client()
 
@@ -87,7 +83,7 @@ class Lord_Pepe_API(discord.Client):
                 answer = int(message.content)
                 if(answer == ans):
                         await client.send_message(channel, '**Ding!**')
-                        ++right_answers
+                        right_answers = right_answers + 1
                 else:
                         await client.send_message(channel, '**Wrong!**')
 
@@ -100,7 +96,8 @@ class Lord_Pepe_API(discord.Client):
                 for int in random_list:
                         for_running = True
                         await self.maths_quiz(author, channel)
-                        ++question_num
+                        question_num = question_num + 1
+                        print(int)
                 while(for_running):
                         if (question_num >= 5):
                                 for_running = False
@@ -263,11 +260,6 @@ class Lord_Pepe_API(discord.Client):
         async def autism(channel, self):
                 await self.send_message(channel, 'http://www.instagram.com/3than_wa15h')
 
-        async def random_meme(channel, self):
-                random_memes = ['memes/meme1.jpg', 'memes/meme2.jpeg', 'memes/meme3.jpg', 'memes/meme4.jpg', 'memes/meme5.jpeg', 'memes/meme6.jpg', 'memes/meme7.png', 'memes/meme8.jpg', 'memes/meme9.jpg', 'memes/meme10.jpg']
-                await self.send_file(channel, fp=random.choice(random_memes))
-                await self.send_message(channel, '**A meme a day, keeps the feminists away.**')
-
         async def memeism_info(channel, self):
                 with open ('resources/info.txt', 'r') as info:
                         info_ = info.read()
@@ -286,8 +278,6 @@ class Lord_Pepe_API(discord.Client):
                         help_file_read = help_file.read()
                         await self.send_message(channel, help_file_read)
 
-        async def autism(channel, self):
-                await self.send_message(channel, 'http://www.instagram.com/3than_wa15h')
 
         async def random_meme(channel, self):
                 random_memes = ['memes/meme1.jpg', 'memes/meme2.jpeg', 'memes/meme3.jpg', 'memes/meme4.jpg', 'memes/meme5.jpeg', 'memes/meme6.jpg', 'memes/meme7.png', 'memes/meme8.jpg', 'memes/meme9.jpg', 'memes/meme10.jpg']
@@ -321,10 +311,6 @@ class Lord_Pepe_API(discord.Client):
                 with open ('resources/info.txt', 'r') as info:
                         info_ = info.read()
                         await self.send_message(channel, "```{}```".format(info_))
-                        
-        async def get_memeism_server(self):
-                memeism_server = 'https://discord.gg/nkmSpS5'
-                return memeism_server
 
         async def return_memeism_server(channel, self):
                 memeism_server_get_method = await self.get_memeism_server(self)
@@ -415,10 +401,7 @@ class Lord_Pepe:
                         await Lord_Pepe_API.get_command_ideas(message.author.id, Lord_Pepe_API(discord.Client))
 
                 if message.content.lower().startswith('$play'):
-<<<<<<< HEAD
 
-=======
->>>>>>> 6cf47bf7321b7674e2d5389094afcdd390ae500a
                     if not (client.is_voice_connected(message.server)):
                         global voice
                         voice = await client.join_voice_channel(message.author.voice.voice_channel)
@@ -434,7 +417,6 @@ class Lord_Pepe:
                         print('Stopped previous stream.')
                         search = message.content[6:]
                         yt_url = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
-                        voice_channel = message.author.voice.voice_channel
                         YTDL_OPTS = {'format': 'webm[abr>0]/bestaudio/best',}
                         player = await voice.create_ytdl_player(yt_url, options=YTDL_OPTS)
                         player.start()
@@ -443,10 +425,6 @@ class Lord_Pepe:
                 if message.content.lower().startswith('$quit'):
                     voice_client = client.voice_client_in(message.server)
                     voice.disconnect()
-<<<<<<< HEAD
-=======
-
->>>>>>> 6cf47bf7321b7674e2d5389094afcdd390ae500a
 
                 if message.content.lower().startswith('$maths'):
                         await Lord_Pepe_API.maths_quiz_main(message.author, message.channel, Lord_Pepe_API(discord.Client))
@@ -491,6 +469,11 @@ class Lord_Pepe:
 
                 if message.content.startswith('$d-shop'):
                     await Lord_Pepe_API.dank_shop(message.channel, message.author, Lord_Pepe_API)
+
+                if message.content.startswith('$yt'):
+                    search = message.content[4:]
+                    response = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
+                    await client.send_message(message.channel, response)
 
 
         client.run(SECRETS["token"])
