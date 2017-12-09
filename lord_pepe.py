@@ -18,7 +18,7 @@ class Lord_Pepe_API(discord.Client):
         SECRETS = json.load(open('resources/SECRETS.json'))
 
 
-        def __init__(self, *args, **kwargs):
+        def __init__(self):
                 self.http = client.http
                 self.connection = client.connection
                 self._resolve_destination = client._resolve_destination
