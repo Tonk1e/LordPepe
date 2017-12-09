@@ -25,10 +25,6 @@ class Lord_Pepe_API(discord.Client):
                 self._listeners = client._listeners
                 self.SECRETS = json.load(open('resources/SECRETS.json'))
 
-        async def commandment(channel, self):
-                commandments = ['1. Always be memeulous.', '2. Never mention 21 or what are those. These are classified as **__DEAD__** memes.', '3. Swear obedience to the dankest, the coolest, the hippest: Lord Pepe.', '4. Your mum is gay.', '5. If you see a feminist, slaughter them.']
-                await self.send_message(channel, random.choice(commandments))
-
         async def get_follower(id, self):
                 follower = await client.get_user_info(id)
                 return follower
