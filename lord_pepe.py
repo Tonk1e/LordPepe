@@ -15,6 +15,7 @@ class Lord_Pepe_API(discord.Client):
         ADMINS = json.load(ADMINS_FILE)
         BANNED_PLAYERS_FILE = open('resources/banned.json')
         BANNED_PLAYERS = json.load(BANNED_PLAYERS_FILE)
+        SECRETS = json.load(open('resources/SECRETS.json'))
 
 
         def __init__(self, *args, **kwargs):
@@ -23,7 +24,6 @@ class Lord_Pepe_API(discord.Client):
                 self._resolve_destination = client._resolve_destination
                 self.loop = client.loop
                 self._listeners = client._listeners
-                self.SECRETS = json.load(open('resources/SECRETS.json'))
 
         async def get_follower(id, self):
                 follower = await client.get_user_info(id)
