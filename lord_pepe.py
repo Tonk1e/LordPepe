@@ -355,7 +355,8 @@ class Lord_Pepe_Game_API(discord.Client):
     async def returnAllPlayersCards(channel, players, cards, self):
         for player in players:
             thing = await self.getCardInfo(players, cards, self)
-            await client.send_message(channel, "```{}")
+            user = await client.get_user_info(f"{player}")
+            await client.send_message(channel, "```{user.name} : {thing}```")
 
 class Lord_Pepe:
 
