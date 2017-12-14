@@ -35,7 +35,7 @@ class Lord_Pepe_API(discord.Client):
                 with open('resources/followers.txt', 'a') as followers:
                         print(follower_name, file=followers)
                 await self.send_message(channel, '**You have been registered as a follower of Memeism.**')
-                
+
         async def return_all_followers(channel, self):
                 with open('resources/followers.txt', 'r') as followers:
                         all_followers = followers.read()
@@ -130,7 +130,7 @@ class Lord_Pepe_API(discord.Client):
                         amount_of_points = random.randint(1, 15)
                         await client.send_message(channel, f"**You have been awarded {amount_of_points} Dank Points!**")
                         DANK_POINTS["{}/{}".format(m_author.name, m_author.id)] = DANK_POINTS["{}/{}".format(m_author.name, m_author.id)] + amount_of_points
-                        
+
                     else:
                         await client.send_message(channel, "**You got it wrong you pleb.**")
                         await client.send_message(channel, "**You got no Dank Points.**")
@@ -225,10 +225,10 @@ class Lord_Pepe_API(discord.Client):
                         with open ('resources/admins.json', 'w') as admins_file:
                             json.dump(ADMINS, admins_file)
                         with open ('resources/dank_points.json', 'w') as dank_points_file:
-                            json.dump(DANK_POINTS, dank_points_file)                   
+                            json.dump(DANK_POINTS, dank_points_file)
                     else:
                         await client.send_message(channel, "**You do not have sufficient funds to complete this action.**")
-             
+
         async def get_youtube_url(search, self):
                 GOOGLE_API_KEY = SECRETS["GOOGLE_API_KEY"]
                 url = "https://www.googleapis.com/youtube/v3/search"
@@ -247,10 +247,10 @@ class Lord_Pepe_API(discord.Client):
                         response = NOT_FOUND
                 return response
 
-        async def generate_passkey(self): 
+        async def generate_passkey(self):
                 passkey = random.randint(1, 1000000000000000)
                 return passkey
-        
+
         async def autism(channel, self):
                 await self.send_message(channel, 'http://www.instagram.com/3than_wa15h')
 
@@ -339,6 +339,24 @@ class CLI:
                         print('Unknown command.')
                         await self.cli_main(self)
 
+class Lord_Pepe_Game_API(discord.Client):
+
+    def __init__(self):
+        card1 = open('resources/cards/card1.txt')
+        card2 = open('resources/cards/card2.txt')
+        cards = [card1.read(), card2.read()]
+
+    async def getCardInfo(players, cards, self):
+        for player in players:
+            CURRENT_PLAYERS = json.load(open('resources/currentPlayers.json'))
+            CURRENT_PLAYERS[f"{player}"] = random.choice(cards)
+            return CURRENT_PLAYERS[f"{player}"]
+
+    async def returnAllPlayersCards(channel, players, cards, self):
+        for player in players:
+            thing = await self.getCardInfo(players, cards, self)
+            await client.send_message(channel, "```{}")
+
 class Lord_Pepe:
 
         global SECRETS
@@ -415,12 +433,7 @@ class Lord_Pepe:
                 if message.content.lower().startswith('$idea') and not message.author.id in BANNED_PLAYERS:
                         await Lord_Pepe_API.get_command_ideas(message.author.id, Lord_Pepe_API(discord.Client))
 
-<<<<<<< HEAD
-                if message.content.lower().startswith('$play'):
-
-=======
                 if message.content.lower().startswith('$play') and not message.author.id in BANNED_PLAYERS:
->>>>>>> 3ad32133a7a679bba680c1ca7a1ee63e96b5da0c
                     if not (client.is_voice_connected(message.server)):
                         global voice
                         voice = await client.join_voice_channel(message.author.voice.voice_channel)
@@ -441,20 +454,16 @@ class Lord_Pepe:
                         player.start()
                         await client.send_message(message.channel, "**Brace your ears. It's playing.**")
 
-<<<<<<< HEAD
                 if message.content.lower().startswith('$quit'):
                     voice_client = client.voice_client_in(message.server)
                     voice.disconnect()
 
-                if message.content.lower().startswith('$maths'):
-=======
                 if message.content.lower().startswith('$quit') and not message.author.id in BANNED_PLAYERS:
                     voice = client.voice_client_in(message.server)
                     voice.disconnect()
 
 
                 if message.content.lower().startswith('$maths') and not message.author.id in BANNED_PLAYERS:
->>>>>>> 3ad32133a7a679bba680c1ca7a1ee63e96b5da0c
                         await Lord_Pepe_API.maths_quiz_main(message.author, message.channel, Lord_Pepe_API(discord.Client))
 
                 if message.content.lower().startswith('$clear') and not message.author.id in BANNED_PLAYERS:
@@ -498,12 +507,11 @@ class Lord_Pepe:
                 if message.content.startswith('$d-shop') and not message.author.id in BANNED_PLAYERS:
                     await Lord_Pepe_API.dank_shop(message.channel, message.author, Lord_Pepe_API)
 
-<<<<<<< HEAD
                 if message.content.startswith('$yt'):
                     search = message.content[4:]
                     response = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
                     await client.send_message(message.channel, response)
-=======
+
                 if message.content.startswith('$yt') and not message.author.id in BANNED_PLAYERS:
                     search = message.content[4:]
                     url = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
@@ -519,7 +527,6 @@ class Lord_Pepe:
                         banned_user = await client.get_user_info(ID_message.content)
                         await Lord_Pepe_API.banUser(banned_user, Lord_Pepe_API)
                         await client.send_message(message.channel, "**It has been dealt with.**")
->>>>>>> 3ad32133a7a679bba680c1ca7a1ee63e96b5da0c
 
 
         client.run(SECRETS["token"])
