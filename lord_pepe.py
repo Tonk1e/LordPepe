@@ -342,9 +342,20 @@ class CLI:
 class Lord_Pepe_Game_API(discord.Client):
 
     def __init__(self):
+        global card1
         card1 = json.load(open('resources/cards/card1.json'))
+        global card2
         card2 = json.load(open('resources/cards/card2..json'))
+        global cards
         cards = [card1.read(), card2.read()]
+    
+    async def gameChecker(amount, self):
+        checking = True
+        while(checking):
+            if(amount > 1):
+                game = True
+                return game
+                checking = False
 
     async def getCardInfo(players, cards, self):
         for player in players:
@@ -358,6 +369,13 @@ class Lord_Pepe_Game_API(discord.Client):
             user = await client.get_user_info(f"{player}")
             await client.send_message(channel, "```{user.name} : {thing}```")
 
+    async def playerDeath(players, player, channel, card, self):
+        await client.send_message(channel, f"```{player.name} has died while using the card {card}!```")
+        CURRENT_PLAYERS[f"{player}"] = False
+        players = players - 1
+        if (players <= 1):
+            await client.send_message
+
     async def getMove(_int, card, self):
         if (card == card1 and _int == 1):
             move = "```You flailed around your arms like a retard! It had no effect!```"
@@ -367,9 +385,8 @@ class Lord_Pepe_Game_API(discord.Client):
             return move
         if (card == card1 and _int == 3):
             card1["hp"] = 0
-            move = f"```You hit yourself in the face! You died!``` ```HP : {card1["hp"]}"
+            move = "```You hit yourself in the face! You died!``` ```HP : {}".format(card1["hp"])
             return move
-        if (card == card2 and _int == 1)
 
     async def executeMove(player, _int, card, channel, self):
         move = await self.getMove(_int, card, self)
@@ -378,8 +395,9 @@ class Lord_Pepe_Game_API(discord.Client):
             pass
         elif(move == "```You flailed around your legs like a retard! It had no effect!```"):
             pass
-        elif(move == f"```You hit yourself in the face! You died!``` ```HP : {card1["hp"]}"):
+        elif(move == "```You hit yourself in the face! You died!``` ```HP : {}".format(card1["hp"])):
             self.playerDeath(player, channel, card, self)
+
 class Lord_Pepe:
 
         global SECRETS
@@ -390,7 +408,7 @@ class Lord_Pepe:
         @client.event
         async def on_ready():
             print('Our lord and savior is online.')
-            passkeyy = await Lord_Pepe_API(discord.Client).generate_passkey()
+            passkeyy = await Lord_Pepe_API.generate_passkey(Lord_Pepe_API)
             global passkeyy_
             passkeyy_ = str(passkeyy)
             print(passkeyy_)
@@ -550,6 +568,22 @@ class Lord_Pepe:
                         banned_user = await client.get_user_info(ID_message.content)
                         await Lord_Pepe_API.banUser(banned_user, Lord_Pepe_API)
                         await client.send_message(message.channel, "**It has been dealt with.**")
+
+                if message.content.startswith('$g-start'):
+                    amount = 0
+                    await client.send_message(message.channel, f"**You have started a game, {message.author.name}.")
+                    time.sleep(0.5)
+                    await client.send_message(message.channel, "**Please type 'me plz' into the chat if you would like to join the game!**")
+                    checkingAmount = True
+                    while(checkingAmount):
+                        wait_for_players = await client.wait_for_message(channel=message.channel)
+                        if(wait_for_players.content.lower() == "me plz"):
+                            await client.send_message(message.channel, f"```{wait_for_players.author.name} has joined the game!")
+                        if(wait_for_players.content.lower() == "start" and wait_for_players.author == message.author):
+                            amount = amount + 1
+                            checker = await Lord_Pepe_Game_API.gameChecker(amount, Lord_Pepe_Game_API)
+                            if(checker):
+                                pass
 
 
         client.run(SECRETS["token"])
