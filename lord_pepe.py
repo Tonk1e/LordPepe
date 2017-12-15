@@ -342,8 +342,8 @@ class CLI:
 class Lord_Pepe_Game_API(discord.Client):
 
     def __init__(self):
-        card1 = open('resources/cards/card1.txt')
-        card2 = open('resources/cards/card2.txt')
+        card1 = json.load(open('resources/cards/card1.json'))
+        card2 = json.load(open('resources/cards/card2..json'))
         cards = [card1.read(), card2.read()]
 
     async def getCardInfo(players, cards, self):
@@ -358,6 +358,28 @@ class Lord_Pepe_Game_API(discord.Client):
             user = await client.get_user_info(f"{player}")
             await client.send_message(channel, "```{user.name} : {thing}```")
 
+    async def getMove(_int, card, self):
+        if (card == card1 and _int == 1):
+            move = "```You flailed around your arms like a retard! It had no effect!```"
+            return move
+        if (card == card1 and _int == 2):
+            move = "```You flailed around your legs like a retard! It had no effect!```"
+            return move
+        if (card == card1 and _int == 3):
+            card1["hp"] = 0
+            move = f"```You hit yourself in the face! You died!``` ```HP : {card1["hp"]}"
+            return move
+        if (card == card2 and _int == 1)
+
+    async def executeMove(player, _int, card, channel, self):
+        move = await self.getMove(_int, card, self)
+        await client.send_message(channel, move)
+        if (move == "```You flailed around your arms like a retard! It had no effect!```"):
+            pass
+        elif(move == "```You flailed around your legs like a retard! It had no effect!```"):
+            pass
+        elif(move == f"```You hit yourself in the face! You died!``` ```HP : {card1["hp"]}"):
+            self.playerDeath(player, channel, card, self)
 class Lord_Pepe:
 
         global SECRETS
