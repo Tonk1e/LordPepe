@@ -1,3 +1,5 @@
+import os
+import sys
 import discord
 import asyncio
 import random
@@ -7,6 +9,9 @@ import aiohttp
 
 client = discord.Client()
 
+global game
+game = False
+
 class Lord_Pepe_API(discord.Client):
 
         DANK_POINTS_FILE = open('resources/dank_points.json')
@@ -14,8 +19,13 @@ class Lord_Pepe_API(discord.Client):
         ADMINS_FILE = open('resources/admins.json')
         ADMINS = json.load(ADMINS_FILE)
         BANNED_PLAYERS_FILE = open('resources/banned.json')
+        global BANNED_PLAYERS
+
         BANNED_PLAYERS = json.load(BANNED_PLAYERS_FILE)
         SECRETS = json.load(open('resources/SECRETS.json'))
+
+        global PROFANITY
+        PROFANITY = json.load(open('resources/profanity.json'))
 
 
         def __init__(self):
@@ -24,6 +34,61 @@ class Lord_Pepe_API(discord.Client):
                 self._resolve_destination = client._resolve_destination
                 self.loop = client.loop
                 self._listeners = client._listeners
+                self.latency = client.latency
+
+        async def profanityChecker(content, channel, user, self):
+            naughty_words = ["shit", "fuck", "bitch", "cunt", "slut", "c#"]
+            if (user.id not in BANNED_PLAYERS):
+                for word in naughty_words:
+                    if word in content.lower():
+                        if (user.id not in PROFANITY):
+                            await client.send_message(channel, f"**{user.name}! You have been caught using a naughty word! 5 more, and you're banned!**")
+                            PROFANITY["{}".format(user.id)] = 5;
+                            with open('resources/profanity.json', 'w') as profanity:
+                                json.dump(PROFANITY, profanity)
+                        else:
+                            chances = PROFANITY["{}".format(user.id)]
+                            if (chances - 1 > 0):
+                                await client.send_message(channel, f"**{user.name}! You have been caught using a naughty word! {chances - 1} more, and you're banned!**")
+                                PROFANITY["{}".format(user.id)] = PROFANITY["{}".format(user.id)] - 1
+                                with open('resources/profanity.json', 'w') as profanity:
+                                    json.dump(PROFANITY, profanity)
+                            elif (chances - 1 <= 0):
+                                await client.send_message(channel, f"**{user.name}, you absolute pleb. You've been banned.**")
+                                BANNED_PLAYERS[user.id] = "banned"
+                                with open('resources/banned.json', 'w') as banned_players_file:
+                                    json.dump(BANNED_PLAYERS, banned_players_file)
+                    else:
+                        pass
+
+
+        async def getLatency(self):
+            print(client.ws.latency)
+
+        async def findReciprocalOf(int1, self):
+            recip = 1 / int1
+            return recip
+
+        async def sendReciprocalOf(int1, channel, self):
+            recip = await self.findReciprocalOf(int1, self)
+            await client.send_message(channel, recip)
+
+        async def eulersNumber(self):
+            e = 2.7182818284590452353602874713527
+            return e
+
+        async def sendEulersNumber(channel, self):
+            e = await self.eulersNumber(self)
+            await client.send_message(channel, e)
+
+        async def multiplyEulersNumberBy(int1, self):
+            e = await self.eulersNumber(self)
+            ans = e * int1
+            return ans
+
+        async def sendEMultiplyResult(int1, channel, self):
+            ans = await self.multiplyEulersNumberBy(int1, self)
+            await client.send_message(channel, ans)
 
         async def get_follower(id, self):
                 follower = await client.get_user_info(id)
@@ -416,10 +481,12 @@ class Lord_Pepe:
         @client.event
         async def on_message(message):
 
+                await Lord_Pepe_API.profanityChecker(message.content, message.channel, message.author, Lord_Pepe_API)
+
                 global players
                 players = {}
 
-                if (message.content.lower().startswith('$meme') and not message.author.id in BANNED_PLAYERS):
+                if (message.content.lower().startswith('$meme') and not BANNED_PLAYERS["{}".format(message.author.id)] == True):
                     meme = message.content[6:]
                     if meme == '1':
                             memeIMG = 'memes/meme1.jpg'
@@ -458,23 +525,23 @@ class Lord_Pepe:
                     else:
                         await client.send_message(message.channel, "**An error ocurred. It's your fault you pleb.**")
 
-                if (message.content.lower() == '$randmeme' and not message.author.id in BANNED_PLAYERS):
+                if (message.content.lower() == '$randmeme' and not BANNED_PLAYERS["{}".format(message.author.id)] == True):
                         await Lord_Pepe_API.random_meme(message.channel, Lord_Pepe_API(discord.Client))
 
-                if message.content.lower().startswith('$info') and not message.author.id in BANNED_PLAYERS:
+                if message.content.lower().startswith('$info') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                         await Lord_Pepe_API.memeism_info(message.channel, Lord_Pepe_API(discord.Client))
 
-                if message.content.lower().startswith('$register') and not message.author.id in BANNED_PLAYERS:
+                if message.content.lower().startswith('$register') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                         ma_id = message.author.id
                         await Lord_Pepe_API.add_follower(message.channel, ma_id, Lord_Pepe_API(discord.Client))
 
-                if message.content.lower().startswith('$all_followers') and not message.author.id in BANNED_PLAYERS:
+                if message.content.lower().startswith('$all_followers') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                         await Lord_Pepe_API.return_all_followers(message.channel, Lord_Pepe_API(discord.Client))
 
-                if message.content.lower().startswith('$idea') and not message.author.id in BANNED_PLAYERS:
+                if message.content.lower().startswith('$idea') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                         await Lord_Pepe_API.get_command_ideas(message.author.id, Lord_Pepe_API(discord.Client))
 
-                if message.content.lower().startswith('$play') and not message.author.id in BANNED_PLAYERS:
+                if message.content.lower().startswith('$play') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                     if not (client.is_voice_connected(message.server)):
                         global voice
                         voice = await client.join_voice_channel(message.author.voice.voice_channel)
@@ -486,57 +553,74 @@ class Lord_Pepe:
                         player.start()
                         await client.send_message(message.channel, "**Brace your ears. It's playing.**")
                     elif (client.is_voice_connected(message.server)):
-                        player.stop()
-                        print('Stopped previous stream.')
-                        search = message.content[6:]
-                        yt_url = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
-                        YTDL_OPTS = {'format': 'webm[abr>0]/bestaudio/best',}
-                        player = await voice.create_ytdl_player(yt_url, options=YTDL_OPTS)
-                        player.start()
-                        await client.send_message(message.channel, "**Brace your ears. It's playing.**")
+                        await client.send_message(message.channel, "**Are you sure about that?**")
+                        confirm = await client.wait_for_message(channel=message.channel, author=message.author)
+                        if(confirm.content.lower().startswith('yes')):
+                            player.stop()
+                            print('Stopped previous stream.')
+                            await client.send_message(message.channel, "**Stopped previous stream.**")
+                            search = message.content[6:]
+                            yt_url = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
+                            YTDL_OPTS = {'format': 'webm[abr>0]/bestaudio/best',}
+                            player = await voice.create_ytdl_player(yt_url, options=YTDL_OPTS)
+                            player.start()
+                            await client.send_message(message.channel, "**Brace your ears. It's playing.**")
+                        elif(confirm.content.lower().startswith('no')):
+                            await client.send_message(message.channel, "**Sik. I won't play dat song.**")
+                        else:
+                            await client.send_message(message.channel, "**I don't have a clue what you are trying to say to me.**")
 
-                if message.content.lower().startswith('$quit'):
-                    voice_client = client.voice_client_in(message.server)
-                    voice.disconnect()
+                if message.content.lower().startswith('$stop') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
+                    if not (client.is_voice_connected(message.server)):
+                        await client.send_message(message.channel, "**I'm not even in a voice channel you pleb.**")
+                    else:
+                        try:
+                            player.stop()
+                            voice.disconnect()
+                            print(voice)
+                            await client.send_message(message.channel, "**I chucked the music away.**")
 
-                if message.content.lower().startswith('$quit') and not message.author.id in BANNED_PLAYERS:
+                        except Exception as e:
+                            print(e)
+
+                if message.content.lower().startswith('$quit') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                     voice = client.voice_client_in(message.server)
                     voice.disconnect()
 
 
-                if message.content.lower().startswith('$maths') and not message.author.id in BANNED_PLAYERS:
+                if message.content.lower().startswith('$maths') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                         await Lord_Pepe_API.maths_quiz_main(message.author, message.channel, Lord_Pepe_API(discord.Client))
 
-                if message.content.lower().startswith('$clear') and not message.author.id in BANNED_PLAYERS:
+                if message.content.lower().startswith('$clear') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                         m_author = message.author
                         chan = message.channel
                         await Lord_Pepe_API.clear(m_author, chan, Lord_Pepe_API(discord.Client))
 
-                if message.content.lower().startswith('$autism') and not message.author.id in BANNED_PLAYERS:
+                if message.content.lower().startswith('$autism') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                     await Lord_Pepe_API.autism(message.channel, Lord_Pepe_API(discord.Client))
 
                 if message.content.startswith(passkeyy_) and not message.author.id == '380095549149544449':
                         await Lord_Pepe_API.ws_close(message.channel, Lord_Pepe_API)
 
-                if message.content.startswith('$bullyme') and not message.author.id in BANNED_PLAYERS:
+                if message.content.startswith('$bullyme') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                     await Lord_Pepe_API.send_bully_message(message.author, message.channel, Lord_Pepe_API)
 
-                if (message.content.lower() == '$memeism') and not message.author.id in BANNED_PLAYERS:
+                if (message.content.lower() == '$memeism') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                     await Lord_Pepe_API.return_memeism_server(message.channel, Lord_Pepe_API)
 
-                if message.content.startswith('$rickbot') and not message.author.id in BANNED_PLAYERS:
+                if message.content.startswith('$rickbot') and not not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                     await Lord_Pepe_API.bully_Rickbot(discord.Object('378954661648007168'), Lord_Pepe_API)
 
-                if message.content.startswith('$d-register') and not message.author.id in BANNED_PLAYERS:
+                if message.content.startswith('$d-register') and not not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                     await Lord_Pepe_API.register_forDankPoints(message.author.name, message.author.id, message.channel.id, Lord_Pepe_API)
 
-                if message.content.startswith('$d-quiz') and not message.author.id in BANNED_PLAYERS:
+                if message.content.startswith('$d-quiz') and not not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                     await Lord_Pepe_API.dank_quiz(message.author, message.channel, Lord_Pepe_API)
 
-                if message.content.startswith('$d-balance') and not message.author.id in BANNED_PLAYERS:
+                if message.content.startswith('$d-balance') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                     await Lord_Pepe_API.dank_balance(message.channel, message.author, Lord_Pepe_API)
 
-                if message.content.startswith('$d-donate') and not message.author.id in BANNED_PLAYERS:
+                if message.content.startswith('$d-donate') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                     donation_amount_str = message.content[10:]
                     donation_amount = int(donation_amount_str)
                     await client.send_message(message.channel, "**Please provide the ID of the user.**")
@@ -545,15 +629,10 @@ class Lord_Pepe:
                     user = await client.get_user_info(user_id)
                     await Lord_Pepe_API.dank_donate(donation_amount, user, message.channel, message.author, Lord_Pepe_API)
 
-                if message.content.startswith('$d-shop') and not message.author.id in BANNED_PLAYERS:
+                if message.content.startswith('$d-shop') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                     await Lord_Pepe_API.dank_shop(message.channel, message.author, Lord_Pepe_API)
 
-                if message.content.startswith('$yt'):
-                    search = message.content[4:]
-                    response = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
-                    await client.send_message(message.channel, response)
-
-                if message.content.startswith('$yt') and not message.author.id in BANNED_PLAYERS:
+                if message.content.startswith('$yt') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                     search = message.content[4:]
                     url = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
                     await client.send_message(message.channel, url)
@@ -567,23 +646,47 @@ class Lord_Pepe:
                     else:
                         banned_user = await client.get_user_info(ID_message.content)
                         await Lord_Pepe_API.banUser(banned_user, Lord_Pepe_API)
+                        print("THE BAN USER FUNCTION WAS RUN BY {} : {}".format(message.author.name, message.author.id))
                         await client.send_message(message.channel, "**It has been dealt with.**")
 
-                if message.content.startswith('$g-start'):
+                if message.content.lower().startswith("$recip") and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
+                    _int = int(message.content[7:])
+                    await Lord_Pepe_API.sendReciprocalOf(_int, message.channel, Lord_Pepe_API)
+
+                if message.content.lower() == "$e" and not message.author.id in BANNED_PLAYERS:
+                    await Lord_Pepe_API.sendEulersNumber(message.channel, Lord_Pepe_API)
+
+                if message.content.lower().startswith("$e-m") and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
+                    int_ = int(message.content[4:])
+                    await Lord_Pepe_API.sendEMultiplyResult(int_, message.channel, Lord_Pepe_API)
+
+                if message.content.startswith('$g-start') and not game:
+                    game = True
                     amount = 0
-                    await client.send_message(message.channel, f"**You have started a game, {message.author.name}.")
+                    await client.send_message(message.channel, f"**You have started a game, {message.author.name}.**")
                     time.sleep(0.5)
                     await client.send_message(message.channel, "**Please type 'me plz' into the chat if you would like to join the game!**")
                     checkingAmount = True
                     while(checkingAmount):
                         wait_for_players = await client.wait_for_message(channel=message.channel)
-                        if(wait_for_players.content.lower() == "me plz"):
-                            await client.send_message(message.channel, f"```{wait_for_players.author.name} has joined the game!")
+                        if(wait_for_players.content.lower() == "me plz" and not wait_for_players.author == message.author):
+                            await client.send_message(message.channel, f"```{wait_for_players.author.name} has joined the game!```")
                         if(wait_for_players.content.lower() == "start" and wait_for_players.author == message.author):
                             amount = amount + 1
                             checker = await Lord_Pepe_Game_API.gameChecker(amount, Lord_Pepe_Game_API)
+                            print("THE GAME CHECKER FUNCTION WAS RUN BY {} : {}".format(message.author.name, message.author.id))
                             if(checker):
                                 pass
+                            else:
+                                await client.send_message(message.channel, "**You need one more player!**")
 
+                if message.content.startswith('$reload') and message.author.id == "292556142952054794":
+                    await client.send_message(message.channel, "**Reloading...**")
+                    os.execv(sys.executable, ["python"] + sys.argv)
+                    await client.send_message(message.channel, "**Reloaded.**")
+
+                if message.content.startswith('$latency'):
+                    await Lord_Pepe_API.getLatency(Lord_Pepe_API)
 
         client.run(SECRETS["token"])
+
