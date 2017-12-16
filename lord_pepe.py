@@ -6,6 +6,8 @@ import random
 import json
 import time
 import aiohttp
+import string
+from termcolor import colored
 
 client = discord.Client()
 
@@ -36,17 +38,38 @@ class Lord_Pepe_API(discord.Client):
                 self._listeners = client._listeners
                 self.latency = client.latency
 
+        def idGenerator(size=6, chars=string.ascii_uppercase + string.digits):
+            return ''.join(random.choice(chars) for _ in range(size))
+
         async def profanityChecker(content, channel, user, self):
-            naughty_words = ["shit", "fuck", "bitch", "cunt", "slut", "c#"]
-            if (user.id not in BANNED_PLAYERS):
+            naughty_words = ["shit", "fuck", "bitch", "cunt", "slut", "c#", "erlang"]
+            global _in
+            _in = 0
+            global __in
+            __in = 0
+            global ___in
+            ___in = 0
+            if (user.id in BANNED_PLAYERS and BANNED_PLAYERS["{}".format(user.id)] == False and not user.id == "380095549149544449") or (user.id not in BANNED_PLAYERS and not user.id == "380095549149544449"):
                 for word in naughty_words:
                     if word in content.lower():
                         if (user.id not in PROFANITY):
+                            randID = self.idGenerator()
+                            print(f"[logger] {randID}: Checking for profanity")
+                            print(f"[logger] {randID}: {user.name}#{user.discriminator}")
+                            print(f"[logger] {randID}: {True}")
+                            print(f"[logger] {randID}: Enforcing punishment on {user.name}#{user.discriminator}")
+                            print("")
                             await client.send_message(channel, f"**{user.name}! You have been caught using a naughty word! 5 more, and you're banned!**")
                             PROFANITY["{}".format(user.id)] = 5;
                             with open('resources/profanity.json', 'w') as profanity:
                                 json.dump(PROFANITY, profanity)
                         else:
+                            randID = self.idGenerator()
+                            print(f"[logger] {randID}: Checking for profanity")
+                            print(f"[logger] {randID}: {user.name}#{user.discriminator}")
+                            print(f"[logger] {randID}: {True}")
+                            print(f"[logger] {randID}: Enforcing punishment on {user.name}#{user.discriminator}")
+                            print("")
                             chances = PROFANITY["{}".format(user.id)]
                             if (chances - 1 > 0):
                                 await client.send_message(channel, f"**{user.name}! You have been caught using a naughty word! {chances - 1} more, and you're banned!**")
@@ -55,11 +78,26 @@ class Lord_Pepe_API(discord.Client):
                                     json.dump(PROFANITY, profanity)
                             elif (chances - 1 <= 0):
                                 await client.send_message(channel, f"**{user.name}, you absolute pleb. You've been banned.**")
-                                BANNED_PLAYERS[user.id] = "banned"
+                                BANNED_PLAYERS[user.id] = True
                                 with open('resources/banned.json', 'w') as banned_players_file:
                                     json.dump(BANNED_PLAYERS, banned_players_file)
                     else:
-                        pass
+                        _in = _in + 1
+                        if(_in == 7):
+                            randID = self.idGenerator()
+                            print(f"[logger] {randID}: Checking for profanity")
+                            print(f"[logger] {randID}: {user.name}#{user.discriminator}")
+                            print(f"[logger] {randID}: {False}")
+                            print("")
+                        else:
+                            pass
+
+        async def printFalse(ID, self):
+            if(_in == 1):
+                print(f"[logger] {randID}: profanityChecker<{user.name}, {user.id}>")
+                sprint(f"[logger] {randID}: {False}")
+            else:
+                pass
 
 
         async def getLatency(self):
@@ -353,18 +391,24 @@ class Lord_Pepe_API(discord.Client):
                 await client.send_message(channel, random.choice(bully_messages))
 
         async def clear(m_author, chan, self):
-                await self.send_message(chan, '**Are you completely sure that you want to clear this chat?**')
-                aa = await self.wait_for_message(author=m_author, content=None)
+                randID = self.idGenerator()
+                print(f"[logger] {randID}: Clearing {chan.name}")
+                print(f"[logger] {randID}: {m_author.name}")
+                await client.send_message(chan, '**Are you completely sure that you want to clear this chat?**')
+                aa = await client.wait_for_message(author=m_author, content=None)
                 if (aa.content == 'yes'):
-                        cll = await self.purge_from(chan,
+                        cll = await client.purge_from(
+                                        channel = chan,
                                         limit = 1000,
                                         check = None)
+                        print(f"[logger] {randID}: {True}")
                 time.sleep(1)
-                rr = await self.send_message(channel, '**{} messages have been cleared.**'.format(len(cll)))
+                rr = await client.send_message(chan, '**{} messages have been cleared.**'.format(len(cll)))
                 time.sleep(2)
-                await self.delete_message(rr)
+                await client.delete_message(rr)
                 if (aa.content == 'no'):
-                        await self.send_message(chan, 'Ok. I will **not** clear.')
+                        print(f"[logger] {randID}: {False}")
+                        await client.send_message(chan, 'Ok. I will **not** clear.')
 
         async def memeism_info(channel, self):
                 with open ('resources/info.txt', 'r') as info:
@@ -383,11 +427,35 @@ class Lord_Pepe_API(discord.Client):
                         time.sleep(1)
 
         async def banUser(user, self):
+            randID = self.idGenerator()
+            print(f"[logger] {randID}: banUser<{user.name}, {user.id}>")
             user_dm = await client.start_private_message(user)
-            await client.send_message(user_dm, "**Well done. You've been banned you prick.**")
-            BANNED_PLAYERS[user.id] = "banned"
+            await client.send_message(user_dm, "**Well done. You've been banned you tosspot.**")
+            BANNED_PLAYERS[user.id] = True
             with open('resources/banned.json', 'w') as banned_players_file:
                 json.dump(BANNED_PLAYERS, banned_players_file)
+
+        async def unbanUser(user, self):
+            randID = self.idGenerator()
+            print(f"[logger] {randID}: unbanUser<{user.name}, {user.id}>")
+            user_dm = await client.start_private_message(user)
+            await client.send_message(user_dm, "**You've been unbanned. Yay.**")
+            BANNED_PLAYERS[user.id] = False
+            PROFANITY[user.id] = 5
+            with open('resources/banned.json', 'w') as banned_players_file:
+                json.dump(BANNED_PLAYERS, banned_players_file)
+            with open('resources/profanity.json', 'w') as profanity:
+                json.dump(PROFANITY, profanity)
+
+        async def addToBannedFile(user, self):
+            if (user.id not in BANNED_PLAYERS):
+                randID = self.idGenerator()
+                print(f"[logger] {randID}: addToBannedFile<{user.name}, {user.id}>")
+                BANNED_PLAYERS["{}".format(user.id)] = False
+                with open('resources/banned.json', 'w') as banned_players_file:
+                    json.dump(BANNED_PLAYERS, banned_players_file)
+            else:
+                pass
 
 class CLI:
 
@@ -480,6 +548,8 @@ class Lord_Pepe:
 
         @client.event
         async def on_message(message):
+
+                await Lord_Pepe_API.addToBannedFile(message.author, Lord_Pepe_API)
 
                 await Lord_Pepe_API.profanityChecker(message.content, message.channel, message.author, Lord_Pepe_API)
 
@@ -594,7 +664,7 @@ class Lord_Pepe:
                 if message.content.lower().startswith('$clear') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                         m_author = message.author
                         chan = message.channel
-                        await Lord_Pepe_API.clear(m_author, chan, Lord_Pepe_API(discord.Client))
+                        await Lord_Pepe_API.clear(m_author, chan, Lord_Pepe_API)
 
                 if message.content.lower().startswith('$autism') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                     await Lord_Pepe_API.autism(message.channel, Lord_Pepe_API(discord.Client))
@@ -660,12 +730,18 @@ class Lord_Pepe:
                     int_ = int(message.content[4:])
                     await Lord_Pepe_API.sendEMultiplyResult(int_, message.channel, Lord_Pepe_API)
 
+                global game
+                game = False
+
                 if message.content.startswith('$g-start') and not game:
+                    global game_starter
+                    game_starter = message.author
                     game = True
                     amount = 0
                     await client.send_message(message.channel, f"**You have started a game, {message.author.name}.**")
                     time.sleep(0.5)
                     await client.send_message(message.channel, "**Please type 'me plz' into the chat if you would like to join the game!**")
+                    global checkingAmount
                     checkingAmount = True
                     while(checkingAmount):
                         wait_for_players = await client.wait_for_message(channel=message.channel)
@@ -680,13 +756,36 @@ class Lord_Pepe:
                             else:
                                 await client.send_message(message.channel, "**You need one more player!**")
 
+                if message.content.startswith('$g-stop') and game:
+                    await client.send_message(message.channel, "**The game has been stopped.**")
+                    game = False
+                    checkingAmount = False
+
                 if message.content.startswith('$reload') and message.author.id == "292556142952054794":
-                    await client.send_message(message.channel, "**Reloading...**")
-                    os.execv(sys.executable, ["python"] + sys.argv)
-                    await client.send_message(message.channel, "**Reloaded.**")
+                    if (client.is_voice_connected(message.server)):
+                        player.stop()
+                        await client.send_message(message.channel, "**Reloading...**")
+                        os.execv(sys.executable, ["python"] + sys.argv)
+                        await client.send_message(message.channel, "**Reloaded.**")
+                    else:
+                        await client.send_message(message.channel, "**Reloading...**")
+                        os.execv(sys.executable, ["python"] + sys.argv)
+                        await client.send_message(message.channel, "**Reloaded.**")
 
                 if message.content.startswith('$latency'):
                     await Lord_Pepe_API.getLatency(Lord_Pepe_API)
+
+                if message.content.startswith('$unban'):
+                    await client.send_message(message.channel, "**Please the specify the ID of the user.**")
+                    global _ID_message
+                    _ID_message = await client.wait_for_message(author=message.author)
+                    if (_ID_message.content == None):
+                        await client.send_message(message.channel, "**Specify a god damn user then.**")
+                    else:
+                        unbanned_user = await client.get_user_info(_ID_message.content)
+                        await Lord_Pepe_API.unbanUser(unbanned_user, Lord_Pepe_API)
+                        print("THE UNBAN USER FUNCTION WAS RUN BY {} : {}".format(message.author.name, message.author.id))
+                        await client.send_message(message.channel, f"**{unbanned_user.name} has been unbanned.**")
 
         client.run(SECRETS["token"])
 
