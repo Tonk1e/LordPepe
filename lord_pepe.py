@@ -7,7 +7,6 @@ import json
 import time
 import aiohttp
 import string
-from termcolor import colored
 
 client = discord.Client()
 
@@ -22,10 +21,8 @@ class Lord_Pepe_API(discord.Client):
         ADMINS = json.load(ADMINS_FILE)
         BANNED_PLAYERS_FILE = open('resources/banned.json')
         global BANNED_PLAYERS
-
         BANNED_PLAYERS = json.load(BANNED_PLAYERS_FILE)
         SECRETS = json.load(open('resources/SECRETS.json'))
-
         global PROFANITY
         PROFANITY = json.load(open('resources/profanity.json'))
 
@@ -124,8 +121,8 @@ class Lord_Pepe_API(discord.Client):
             ans = await self.multiplyEulersNumberBy(int1, self)
             await client.send_message(channel, ans)
 
-        async def get_follower(id, self):
-                follower = await client.get_user_info(id)
+        async def get_follower(_id, self):
+                follower = await client.get_user_info(_id)
                 return follower
 
         async def add_follower(channel, ma_id, self):
@@ -422,8 +419,8 @@ class Lord_Pepe_Game_API(discord.Client):
         while(checking):
             if(amount > 1):
                 game = True
-                return game
                 checking = False
+                return game
 
     async def getCardInfo(players, cards, self):
         for player in players:
@@ -433,9 +430,9 @@ class Lord_Pepe_Game_API(discord.Client):
 
     async def returnAllPlayersCards(channel, players, cards, self):
         for player in players:
-            #thing = await self.getCardInfo(players, cards, self)
+            thing = await self.getCardInfo(players, cards, self)
             user = await client.get_user_info(f"{player}")
-            await client.send_message(channel, "```{user.name} : {thing}```")
+            await client.send_message(channel, f"```{user.name} : {thing}```")
 
     async def playerDeath(players, player, channel, card, self):
         await client.send_message(channel, f"```{player.name} has died while using the card {card}!```")
@@ -591,17 +588,13 @@ class Lord_Pepe:
                     voice = client.voice_client_in(message.server)
                     voice.disconnect()
 
-
-                if message.content.lower().startswith('$maths') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
-                        await Lord_Pepe_API.maths_quiz_main(message.author, message.channel, Lord_Pepe_API(discord.Client))
-
                 if message.content.lower().startswith('$clear') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                         m_author = message.author
                         chan = message.channel
                         await Lord_Pepe_API.clear(m_author, chan, Lord_Pepe_API)
 
                 if message.content.lower().startswith('$autism') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
-                    await Lord_Pepe_API.autism(message.channel, Lord_Pepe_API(discord.Client))
+                    await Lord_Pepe_API.autism(message.channel, Lord_Pepe_API)
 
                 if message.content.startswith(passkeyy_) and not message.author.id == '380095549149544449':
                         await Lord_Pepe_API.ws_close(message.channel, Lord_Pepe_API)
