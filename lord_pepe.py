@@ -45,10 +45,6 @@ class Lord_Pepe_API(discord.Client):
             naughty_words = ["shit", "fuck", "bitch", "cunt", "slut", "c#", "erlang"]
             global _in
             _in = 0
-            global __in
-            __in = 0
-            global ___in
-            ___in = 0
             if (user.id in BANNED_PLAYERS and BANNED_PLAYERS["{}".format(user.id)] == False and not user.id == "380095549149544449") or (user.id not in BANNED_PLAYERS and not user.id == "380095549149544449"):
                 for word in naughty_words:
                     if word in content.lower():
@@ -155,48 +151,6 @@ class Lord_Pepe_API(discord.Client):
                         print('Command idea: {}'.format(m_c), file=ideas_file)
                         print('Command idea: {}'.format(m_c))
 
-        async def devil(channel, content, m_author, self):
-                voice = await self.join_voice_channel(channel)
-                await voice.create_ytdl_player()
-
-        async def maths_quiz(author, channel, self):
-                operators = ['/', '*', '+', '-']
-                randint1 = random.randint(0, 100)
-                randint2 = random.randint(0, 100)
-                randoperator_str = random.choice(operators)
-                if (randoperator_str == '/'):
-                        ans = randint1 / randint2
-                elif (randoperator_str == '*'):
-                        ans = randint1 * randint2
-                elif (randoperator_str == '+'):
-                        ans = randint1 + randint2
-                elif (randoperator_str == '-'):
-                        ans = randint1 - randint2
-                await client.send_message(channel, 'What is {} {} {}?'.format(randint1, randoperator_str, randint2))
-                await client.wait_for_message(author=author, content=None)
-                answer = int(message.content)
-                if(answer == ans):
-                        await client.send_message(channel, '**Ding!**')
-                        right_answers = right_answers + 1
-                else:
-                        await client.send_message(channel, '**Wrong!**')
-
-        async def maths_quiz_main(author, channel, self):
-                global right_answers
-                right_answers = 0
-                global question_num
-                question_num = 0
-                random_list = [0, 1, 2, 3, 4]
-                for int in random_list:
-                        for_running = True
-                        await self.maths_quiz(author, channel)
-                        question_num = question_num + 1
-                        print(int)
-                while(for_running):
-                        if (question_num >= 5):
-                                for_running = False
-                                question_num = 0
-
         async def terminal_to_speech(self):
                 recipient_id = input('UserID>>>')
                 recipient = await self.get_user_info(recipient_id)
@@ -298,7 +252,6 @@ class Lord_Pepe_API(discord.Client):
         async def dank_donate(donation_amount, donate_recipient, channel, m_author, self):
             if (f"{m_author.name}/{m_author.id}" in DANK_POINTS):
                 balance1 = DANK_POINTS[f"{m_author.name}/{m_author.id}"]
-                balance2 = DANK_POINTS[f"{donate_recipient.name}/{donate_recipient.id}"]
                 if (balance1 - donation_amount > 0):
                     DANK_POINTS[f"{m_author.name}/{m_author.id}"] = DANK_POINTS[f"{m_author.name}/{m_author.id}"] - donation_amount
                     DANK_POINTS[f"{donate_recipient.name}/{donate_recipient.id}"] = DANK_POINTS[f"{donate_recipient.name}/{donate_recipient.id}"] + donation_amount
@@ -415,10 +368,6 @@ class Lord_Pepe_API(discord.Client):
                         info_ = info.read()
                         await self.send_message(channel, "```{}```".format(info_))
 
-        async def return_memeism_server(channel, self):
-                memeism_server_get_method = await self.get_memeism_server(self)
-                await client.send_message(channel, memeism_server_get_method)
-
         async def bully_Rickbot(channel, self):
                 Rickbot_bully_messages = ['**Rickbot is a piece of shit.**', '**At least make Rickbot work.**', '**Where did you make Rickbot? The toilet store?**', '**Why does Rickbot exist?**', '**Just kill him.**', "**He's terrible.**"]
                 times = [0, 1, 2, 3, 4, 5]
@@ -457,20 +406,6 @@ class Lord_Pepe_API(discord.Client):
             else:
                 pass
 
-class CLI:
-
-        def __init__(self):
-                pass
-
-        async def cli_main(self):
-                print('PEPE CLI VERSION 1.0.0')
-                comm = input('>>>')
-                if (comm == 'dm'):
-                        await Lord_Pepe_API.terminal_to_speech(Lord_Pepe_API(discord.Client))
-                        await self.cli_main(self)
-                else:
-                        print('Unknown command.')
-                        await self.cli_main(self)
 
 class Lord_Pepe_Game_API(discord.Client):
 
@@ -498,7 +433,7 @@ class Lord_Pepe_Game_API(discord.Client):
 
     async def returnAllPlayersCards(channel, players, cards, self):
         for player in players:
-            thing = await self.getCardInfo(players, cards, self)
+            #thing = await self.getCardInfo(players, cards, self)
             user = await client.get_user_info(f"{player}")
             await client.send_message(channel, "```{user.name} : {thing}```")
 
@@ -560,34 +495,34 @@ class Lord_Pepe:
                     meme = message.content[6:]
                     if meme == '1':
                             memeIMG = 'memes/meme1.jpg'
-                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API(discord.Client))
+                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API)
                     elif meme == '2':
                             memeIMG = 'memes/meme2.jpeg'
-                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API(discord.Client))
+                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API)
                     elif meme == '3':
                             memeIMG = 'memes/meme3.jpg'
-                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API(discord.Client))
+                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API)
                     elif meme == '4':
                             memeIMG = 'memes/meme4.jpg'
-                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API(discord.Client))
+                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API)
                     elif meme == '5':
                             memeIMG = 'memes/meme5.jpeg'
-                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API(discord.Client))
+                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API)
                     elif meme == '6':
                             memeIMG = 'memes/meme6.jpg'
-                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API(discord.Client))
+                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API)
                     elif meme == '7':
                             memeIMG = 'memes/meme7.png'
-                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API(discord.Client))
+                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API)
                     elif meme == '8':
                             memeIMG = 'memes/meme8.jpg'
-                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API(discord.Client))
+                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API)
                     elif meme == '9':
                             memeIMG = 'memes/meme9.jpg'
-                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API(discord.Client))
+                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API)
                     elif meme == '10':
                             memeIMG = 'memes/meme10.jpg'
-                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API(discord.Client))
+                            await Lord_Pepe_API.meme(memeIMG, message.channel, Lord_Pepe_API)
 
                     elif meme == None:
                         await client.send_message(message.channel, "**You didn't specify a meme you pleb.**")
@@ -599,7 +534,7 @@ class Lord_Pepe:
                         await Lord_Pepe_API.random_meme(message.channel, Lord_Pepe_API(discord.Client))
 
                 if message.content.lower().startswith('$info') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
-                        await Lord_Pepe_API.memeism_info(message.channel, Lord_Pepe_API(discord.Client))
+                        await Lord_Pepe_API.memeism_info(message.channel, Lord_Pepe_API)
 
                 if message.content.lower().startswith('$register') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                         ma_id = message.author.id
@@ -609,8 +544,7 @@ class Lord_Pepe:
                         await Lord_Pepe_API.return_all_followers(message.channel, Lord_Pepe_API(discord.Client))
 
                 if message.content.lower().startswith('$idea') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
-                        await Lord_Pepe_API.get_command_ideas(message.author.id, Lord_Pepe_API(discord.Client))
-
+                        await Lord_Pepe_API.get_command_ideas(message.author.id, Lord_Pepe_API)
                 if message.content.lower().startswith('$play') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                     if not (client.is_voice_connected(message.server)):
                         global voice
