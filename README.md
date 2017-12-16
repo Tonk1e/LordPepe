@@ -9,4 +9,4 @@ I don't see why you'd want to, but if you really want to then here you go.
 Just hit this: https://goo.gl/wDj2uE
 
 ### Commands
-When he is on your server, just ype `$help`.
+When he is on your server, just type `$help`.
