@@ -531,17 +531,17 @@ class Lord_Pepe:
                         await client.send_message(message.channel, "**An error ocurred. It's your fault you pleb.**")
 
                 if (message.content.lower() == '$randmeme' and not BANNED_PLAYERS["{}".format(message.author.id)] == True):
-                        await Lord_Pepe_API.random_meme(message.channel, Lord_Pepe_API(discord.Client))
+                        await Lord_Pepe_API.random_meme(message.channel, Lord_Pepe_API)
 
                 if message.content.lower().startswith('$info') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                         await Lord_Pepe_API.memeism_info(message.channel, Lord_Pepe_API)
 
                 if message.content.lower().startswith('$register') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                         ma_id = message.author.id
-                        await Lord_Pepe_API.add_follower(message.channel, ma_id, Lord_Pepe_API(discord.Client))
+                        await Lord_Pepe_API.add_follower(message.channel, ma_id, Lord_Pepe_API)
 
                 if message.content.lower().startswith('$all_followers') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
-                        await Lord_Pepe_API.return_all_followers(message.channel, Lord_Pepe_API(discord.Client))
+                        await Lord_Pepe_API.return_all_followers(message.channel, Lord_Pepe_API)
 
                 if message.content.lower().startswith('$idea') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                         await Lord_Pepe_API.get_command_ideas(message.author.id, Lord_Pepe_API)
