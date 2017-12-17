@@ -1,7 +1,6 @@
 import os
 import sys
 import discord
-import asyncio
 import random
 import json
 import time
