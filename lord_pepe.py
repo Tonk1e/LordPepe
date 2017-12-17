@@ -21,6 +21,7 @@ SECRETS = json.load(open('resources/SECRETS.json'))
 GOOGLE_API_KEY = SECRETS["GOOGLE_API_KEY"]
 card1 = json.load(open('resources/cards/card1.json'))
 card2 = json.load(open('resources/cards/card2.json'))
+_in = 0
 
 class Lord_Pepe_API(discord.Client):
 
@@ -37,8 +38,6 @@ class Lord_Pepe_API(discord.Client):
 
         async def profanityChecker(content, channel, user, self):
             naughty_words = ["shit", "fuck", "bitch", "cunt", "slut", "c#", "erlang"]
-            global _in
-            _in = 0
             if (user.id in BANNED_PLAYERS and BANNED_PLAYERS["{}".format(user.id)] == False and not user.id == "380095549149544449") or (user.id not in BANNED_PLAYERS and not user.id == "380095549149544449"):
                 for word in naughty_words:
                     if word in content.lower():
