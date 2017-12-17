@@ -6,22 +6,26 @@ import json
 import time
 import aiohttp
 import string
+import time
+import platform
+import psutil
+import cpuinfo
 
 client = discord.Client()
 
-game = False
-DANK_POINTS_FILE = open('resources/dank_points.json')
-DANK_POINTS = json.load(DANK_POINTS_FILE)
-ADMINS_FILE = open('resources/admins.json')
-ADMINS = json.load(ADMINS_FILE)
-BANNED_PLAYERS_FILE = open('resources/banned.json')
-BANNED_PLAYERS = json.load(BANNED_PLAYERS_FILE)
-PROFANITY = json.load(open('resources/profanity.json'))
-SECRETS = json.load(open('resources/SECRETS.json'))
-GOOGLE_API_KEY = SECRETS["GOOGLE_API_KEY"]
-card1 = json.load(open('resources/cards/card1.json'))
-card2 = json.load(open('resources/cards/card2.json'))
-_in = 0
+if __name__ == '__main__':
+    game = False
+    DANK_POINTS_FILE = open('resources/dank_points.json')
+    DANK_POINTS = json.load(DANK_POINTS_FILE)
+    ADMINS_FILE = open('resources/admins.json')
+    ADMINS = json.load(ADMINS_FILE)
+    BANNED_PLAYERS_FILE = open('resources/banned.json')
+    BANNED_PLAYERS = json.load(BANNED_PLAYERS_FILE)
+    PROFANITY = json.load(open('resources/profanity.json'))
+    SECRETS = json.load(open('resources/SECRETS.json'))
+    GOOGLE_API_KEY = SECRETS["GOOGLE_API_KEY"]
+    card1 = json.load(open('resources/cards/card1.json'))
+    card2 = json.load(open('resources/cards/card2.json'))
 
 class Lord_Pepe_API(discord.Client):
 
@@ -38,6 +42,8 @@ class Lord_Pepe_API(discord.Client):
 
         async def profanityChecker(content, channel, user, self):
             naughty_words = ["shit", "fuck", "bitch", "cunt", "slut", "c#", "erlang"]
+            global _in
+            _in = 0
             if (user.id in BANNED_PLAYERS and BANNED_PLAYERS["{}".format(user.id)] == False and not user.id == "380095549149544449") or (user.id not in BANNED_PLAYERS and not user.id == "380095549149544449"):
                 for word in naughty_words:
                     if word in content.lower():
@@ -322,15 +328,24 @@ class Lord_Pepe_API(discord.Client):
                         await self.send_message(channel, help_file_read)
 
 
-        async def random_meme(channel, self):
+        async def random_meme(message, channel, self):
+                randID = self.idGenerator()
+                print(f"[logger] {randID}: Gathering random meme")
+                print(f"[logger] {randID}: {message.author,name}#{message.author.discriminator}")
+                print(f"[logger] {randID}: Returning selected meme")
                 random_memes = ['memes/meme1.jpg', 'memes/meme2.jpeg', 'memes/meme3.jpg', 'memes/meme4.jpg', 'memes/meme5.jpeg', 'memes/meme6.jpg', 'memes/meme7.png', 'memes/meme8.jpg', 'memes/meme9.jpg', 'memes/meme10.jpg']
                 await self.send_file(channel, fp=random.choice(random_memes))
                 await self.send_message(channel, '**A meme a day, keeps the feminists away.**')
 
         async def ws_close(channel, self):
+                randID = self.idGenerator()
+                print(f"[logger] {randID}: Closing websocket")
                 await client.send_message(channel, ':white_check_mark: **Websocket Close Request received.** :white_check_mark:')
                 await client.send_message(channel, '**Goodbye cruel world!** :middle_finger:')
+                print(f"[logger] {randID}: Websocket closed")
+                print("")
                 await client.logout()
+                time.sleep(3)
 
         async def send_bully_message(victim, channel, self):
                 bully_messages = ["**{} has AIDS.**".format(victim.name), "**{}'s Dad is 44.**".format(victim.name), "**Brush your teeth {}.**".format(victim.name)]
@@ -365,7 +380,10 @@ class Lord_Pepe_API(discord.Client):
 
         async def banUser(user, self):
             randID = self.idGenerator()
-            print(f"[logger] {randID}: banUser<{user.name}, {user.id}>")
+            print(f"[logger] {randID}: Banning user")
+            print(f"[logger] {randID}: {user.name}#{user.discriminator}")
+            print(f"[logger] {randID}: Banned user")
+            print("")
             user_dm = await client.start_private_message(user)
             await client.send_message(user_dm, "**Well done. You've been banned you tosspot.**")
             BANNED_PLAYERS[user.id] = True
@@ -374,7 +392,10 @@ class Lord_Pepe_API(discord.Client):
 
         async def unbanUser(user, self):
             randID = self.idGenerator()
-            print(f"[logger] {randID}: unbanUser<{user.name}, {user.id}>")
+            print(f"[logger] {randID}: Unbanning user")
+            print(f"[logger] {randID}: {user.name}#{user.discriminator}")
+            print(f"[logger] {randID}: Unbanned user")
+            print("")
             user_dm = await client.start_private_message(user)
             await client.send_message(user_dm, "**You've been unbanned. Yay.**")
             BANNED_PLAYERS[user.id] = False
@@ -387,12 +408,74 @@ class Lord_Pepe_API(discord.Client):
         async def addToBannedFile(user, self):
             if (user.id not in BANNED_PLAYERS):
                 randID = self.idGenerator()
-                print(f"[logger] {randID}: addToBannedFile<{user.name}, {user.id}>")
+                print(f"[logger] {randID}: Adding to banned file")
+                print(f"[logger] {randID}: {user.name}#{user.discriminator}")
+                print(f"[logger] {randID}: Added to banned file")
+                print("")
                 BANNED_PLAYERS["{}".format(user.id)] = False
                 with open('resources/banned.json', 'w') as banned_players_file:
                     json.dump(BANNED_PLAYERS, banned_players_file)
             else:
                 pass
+
+        async def stopVoice(message, self):
+            if not (client.is_voice_connected(message.server)):
+                randID = self.idGenerator()
+                print(f"[logger] {randID}: Stopping stream")
+                print(f"[logger] {randID}: {message.author.id}#{message.author.discriminator}")
+                print(f"[logger] {randID}: {False}")
+                print(f"[logger] {randID}: Not in a voice channel")
+                print("")
+                await client.send_message(message.channel, "**I'm not even in a voice channel you pleb.**")
+            else:
+                try:
+                    randID = self.idGenerator()
+                    player.stop()
+                    print(f"[logger] {randID}: Stopping stream")
+                    print(f"[logger] {randID}: {message.author.name}#{message.author.discriminator}")
+                    print(f"[logger] {randID}: {False}")
+                    print("")
+                    voice.disconnect()
+                    print(voice)
+                    await client.send_message(message.channel, "**I chucked the music away.**")
+
+                except Exception as e:
+                    print(e)
+
+        async def playVoice(message, self):
+            if not (client.is_voice_connected(message.server)):
+                global voice
+                voice = await client.join_voice_channel(message.author.voice.voice_channel)
+                search = message.content[6:]
+                yt_url = await self.get_youtube_url(search, Lord_Pepe_API)
+                YTDL_OPTS = {'format': 'webm[abr>0]/bestaudio/best',}
+                global player
+                player = await voice.create_ytdl_player(yt_url, options=YTDL_OPTS)
+                player.start()
+                await client.send_message(message.channel, "**Brace your ears. It's playing.**")
+            elif (client.is_voice_connected(message.server)):
+                await client.send_message(message.channel, "**Are you sure about that?**")
+                confirm = await client.wait_for_message(channel=message.channel, author=message.author)
+                if(confirm.content.lower().startswith('yes')):
+                    player.stop()
+                    print('Stopped previous stream.')
+                    await client.send_message(message.channel, "**Stopped previous stream.**")
+                    search = message.content[6:]
+                    yt_url = await self.get_youtube_url(search, Lord_Pepe_API)
+                    YTDL_OPTS = {'format': 'webm[abr>0]/bestaudio/best',}
+                    player = await voice.create_ytdl_player(yt_url, options=YTDL_OPTS)
+                    player.start()
+                    await client.send_message(message.channel, "**Brace your ears. It's playing.**")
+                elif(confirm.content.lower().startswith('no')):
+                    await client.send_message(message.channel, "**Sik. I won't play dat song.**")
+                else:
+                    await client.send_message(message.channel, "**I don't have a clue what you are trying to say to me.**")
+
+        async def reload(message, self):
+            em = discord.Embed()
+            em.set_author(name="Bot", icon_url="https://yt3.ggpht.com/-uGndS7vqT3E/AAAAAAAAAAI/AAAAAAAAAAA/u_NAaqagZng/s900-c-k-no-mo-rj-c0xffffff/photo.jpg")
+            em.description = "Reloading..."
+            await client.send_message(message.channel, embed=em)
 
 
 class Lord_Pepe_Game_API(discord.Client):
@@ -454,6 +537,13 @@ class Lord_Pepe_Game_API(discord.Client):
         elif(move == "```You hit yourself in the face! You died!``` ```HP : {}".format(card1["hp"])):
             self.playerDeath(player, channel, card, self)
 
+    async def getMachineInfo(message, self):
+        architecture = platform.machine()
+        em = discord.Embed()
+        em.title = "Machine Info"
+        em.add_field(name="Architecture", value=architecture)
+        await client.send_message(message.channel, embed=em)
+
 class Lord_Pepe:
 
         @client.event
@@ -463,6 +553,10 @@ class Lord_Pepe:
             global passkeyy_
             passkeyy_ = str(passkeyy)
             print(passkeyy_)
+            em = discord.Embed()
+            em.set_author(name="Bot", icon_url="https://yt3.ggpht.com/-uGndS7vqT3E/AAAAAAAAAAI/AAAAAAAAAAA/u_NAaqagZng/s900-c-k-no-mo-rj-c0xffffff/photo.jpg")
+            em.description = "Online."
+            await client.send_message(discord.Object("378954661648007168"), embed=em)
 
         @client.event
         async def on_message(message):
@@ -529,46 +623,10 @@ class Lord_Pepe:
                 if message.content.lower().startswith('$idea') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                         await Lord_Pepe_API.get_command_ideas(message.author.id, Lord_Pepe_API)
                 if message.content.lower().startswith('$play') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
-                    if not (client.is_voice_connected(message.server)):
-                        global voice
-                        voice = await client.join_voice_channel(message.author.voice.voice_channel)
-                        search = message.content[6:]
-                        yt_url = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
-                        YTDL_OPTS = {'format': 'webm[abr>0]/bestaudio/best',}
-                        global player
-                        player = await voice.create_ytdl_player(yt_url, options=YTDL_OPTS)
-                        player.start()
-                        await client.send_message(message.channel, "**Brace your ears. It's playing.**")
-                    elif (client.is_voice_connected(message.server)):
-                        await client.send_message(message.channel, "**Are you sure about that?**")
-                        confirm = await client.wait_for_message(channel=message.channel, author=message.author)
-                        if(confirm.content.lower().startswith('yes')):
-                            player.stop()
-                            print('Stopped previous stream.')
-                            await client.send_message(message.channel, "**Stopped previous stream.**")
-                            search = message.content[6:]
-                            yt_url = await Lord_Pepe_API.get_youtube_url(search, Lord_Pepe_API)
-                            YTDL_OPTS = {'format': 'webm[abr>0]/bestaudio/best',}
-                            player = await voice.create_ytdl_player(yt_url, options=YTDL_OPTS)
-                            player.start()
-                            await client.send_message(message.channel, "**Brace your ears. It's playing.**")
-                        elif(confirm.content.lower().startswith('no')):
-                            await client.send_message(message.channel, "**Sik. I won't play dat song.**")
-                        else:
-                            await client.send_message(message.channel, "**I don't have a clue what you are trying to say to me.**")
+                    await Lord_Pepe_API.playVoice(message, Lord_Pepe_API)
 
                 if message.content.lower().startswith('$stop') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
-                    if not (client.is_voice_connected(message.server)):
-                        await client.send_message(message.channel, "**I'm not even in a voice channel you pleb.**")
-                    else:
-                        try:
-                            player.stop()
-                            voice.disconnect()
-                            print(voice)
-                            await client.send_message(message.channel, "**I chucked the music away.**")
-
-                        except Exception as e:
-                            print(e)
+                    await Lord_Pepe_API.stopVoice(message, Lord_Pepe_API)
 
                 if message.content.lower().startswith('$quit') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                     voice = client.voice_client_in(message.server)
@@ -629,7 +687,6 @@ class Lord_Pepe:
                     else:
                         banned_user = await client.get_user_info(ID_message.content)
                         await Lord_Pepe_API.banUser(banned_user, Lord_Pepe_API)
-                        print("THE BAN USER FUNCTION WAS RUN BY {} : {}".format(message.author.name, message.author.id))
                         await client.send_message(message.channel, "**It has been dealt with.**")
 
                 if message.content.lower().startswith("$recip") and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
@@ -677,11 +734,11 @@ class Lord_Pepe:
                 if message.content.startswith('$reload') and message.author.id == "292556142952054794":
                     if (client.is_voice_connected(message.server)):
                         player.stop()
-                        await client.send_message(message.channel, "**Reloading...**")
+                        await Lord_Pepe_API.reload(message, Lord_Pepe_API)
                         os.execv(sys.executable, ["python"] + sys.argv)
                         await client.send_message(message.channel, "**Reloaded.**")
                     else:
-                        await client.send_message(message.channel, "**Reloading...**")
+                        await Lord_Pepe_API.reload(message, Lord_Pepe_API)
                         os.execv(sys.executable, ["python"] + sys.argv)
                         await client.send_message(message.channel, "**Reloaded.**")
 
@@ -699,6 +756,26 @@ class Lord_Pepe:
                         await Lord_Pepe_API.unbanUser(unbanned_user, Lord_Pepe_API)
                         print("THE UNBAN USER FUNCTION WAS RUN BY {} : {}".format(message.author.name, message.author.id))
                         await client.send_message(message.channel, f"**{unbanned_user.name} has been unbanned.**")
+
+                if message.content.lower().startswith('$sys'):
+                    architecture = platform.machine()
+                    OS = platform.system()
+                    processor = (cpuinfo.get_cpu_info()["brand"])
+                    cores = psutil.cpu_count()
+                    cpu_usage = psutil.cpu_percent(interval=None)
+                    clock = (cpuinfo.get_cpu_info()["hz_actual"])
+                    em = discord.Embed()
+                    em.set_author(name="System Info", icon_url="https://yt3.ggpht.com/-uGndS7vqT3E/AAAAAAAAAAI/AAAAAAAAAAA/u_NAaqagZng/s900-c-k-no-mo-rj-c0xffffff/photo.jpg")
+                    em.add_field(name="Architecture", value=architecture)
+                    em.add_field(name="Operating System", value=OS)
+                    em.add_field(name="Processor", value=processor)
+                    em2 = discord.Embed()
+                    em2.add_field(name="CPU Cores", value=cores)
+                    em2.add_field(name="CPU Usage", value=f"{cpu_usage}%")
+                    em2.add_field(name="Current Clock", value=clock)
+                    await client.send_message(message.channel, embed=em)
+                    await client.send_message(message.channel, embed=em2)
+
 
         client.run(SECRETS["token"])
 
