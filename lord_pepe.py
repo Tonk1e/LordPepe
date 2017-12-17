@@ -365,7 +365,7 @@ class Lord_Pepe_API(discord.Client):
                 await client.delete_message(rr)
                 if (aa.content == 'no'):
                         print(f"[logger] {randID}: {False}")
-                        await client.send_message(chan, 'Ok. I will **not** clear.')`
+                        await client.send_message(chan, 'Ok. I will **not** clear.')
 
         async def bully_Rickbot(channel, self):
                 Rickbot_bully_messages = ['**Rickbot is a piece of shit.**', '**At least make Rickbot work.**', '**Where did you make Rickbot? The toilet store?**', '**Why does Rickbot exist?**', '**Just kill him.**', "**He's terrible.**"]
