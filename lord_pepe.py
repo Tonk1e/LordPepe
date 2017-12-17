@@ -11,20 +11,28 @@ client = discord.Client()
 
 global game
 game = False
+DANK_POINTS_FILE = open('resources/dank_points.json')
+DANK_POINTS = json.load(DANK_POINTS_FILE)
+ADMINS_FILE = open('resources/admins.json')
+ADMINS = json.load(ADMINS_FILE)
+BANNED_PLAYERS_FILE = open('resources/banned.json')
+global BANNED_PLAYERS
+BANNED_PLAYERS = json.load(BANNED_PLAYERS_FILE)
+SECRETS = json.load(open('resources/SECRETS.json'))
+global PROFANITY
+PROFANITY = json.load(open('resources/profanity.json'))
+global SECRETS
+SECRETS = json.load(open('resources/SECRETS.json'))
+global GOOGLE_API_KEY
+GOOGLE_API_KEY = SECRETS["GOOGLE_API_KEY"]
+global card1
+card1 = json.load(open('resources/cards/card1.json'))
+global card2
+card2 = json.load(open('resources/cards/card2..json'))
+global cards
+cards = [card1.read(), card2.read()]
 
 class Lord_Pepe_API(discord.Client):
-
-        DANK_POINTS_FILE = open('resources/dank_points.json')
-        DANK_POINTS = json.load(DANK_POINTS_FILE)
-        ADMINS_FILE = open('resources/admins.json')
-        ADMINS = json.load(ADMINS_FILE)
-        BANNED_PLAYERS_FILE = open('resources/banned.json')
-        global BANNED_PLAYERS
-        BANNED_PLAYERS = json.load(BANNED_PLAYERS_FILE)
-        SECRETS = json.load(open('resources/SECRETS.json'))
-        global PROFANITY
-        PROFANITY = json.load(open('resources/profanity.json'))
-
 
         def __init__(self):
                 self.http = client.http
@@ -357,12 +365,7 @@ class Lord_Pepe_API(discord.Client):
                 await client.delete_message(rr)
                 if (aa.content == 'no'):
                         print(f"[logger] {randID}: {False}")
-                        await client.send_message(chan, 'Ok. I will **not** clear.')
-
-        async def memeism_info(channel, self):
-                with open ('resources/info.txt', 'r') as info:
-                        info_ = info.read()
-                        await self.send_message(channel, "```{}```".format(info_))
+                        await client.send_message(chan, 'Ok. I will **not** clear.')`
 
         async def bully_Rickbot(channel, self):
                 Rickbot_bully_messages = ['**Rickbot is a piece of shit.**', '**At least make Rickbot work.**', '**Where did you make Rickbot? The toilet store?**', '**Why does Rickbot exist?**', '**Just kill him.**', "**He's terrible.**"]
@@ -463,11 +466,6 @@ class Lord_Pepe_Game_API(discord.Client):
             self.playerDeath(player, channel, card, self)
 
 class Lord_Pepe:
-
-        global SECRETS
-        SECRETS = json.load(open('resources/SECRETS.json'))
-        global GOOGLE_API_KEY
-        GOOGLE_API_KEY = SECRETS["GOOGLE_API_KEY"]
 
         @client.event
         async def on_ready():
