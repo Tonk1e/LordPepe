@@ -28,8 +28,6 @@ global card1
 card1 = json.load(open('resources/cards/card1.json'))
 global card2
 card2 = json.load(open('resources/cards/card2.json'))
-global cards
-cards = [card1.read(), card2.read()]
 
 class Lord_Pepe_API(discord.Client):
 
