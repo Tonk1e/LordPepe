@@ -51,6 +51,7 @@ class Lord_Pepe_API(discord.Client):
                             randID = self.idGenerator()
                             print(f"[logger] {randID}: Checking for profanity")
                             print(f"[logger] {randID}: {user.name}#{user.discriminator}")
+                            print(f"[logger] {randID}: '{content}'")
                             print(f"[logger] {randID}: {True}")
                             print(f"[logger] {randID}: Enforcing punishment on {user.name}#{user.discriminator}")
                             print("")
@@ -62,6 +63,7 @@ class Lord_Pepe_API(discord.Client):
                             randID = self.idGenerator()
                             print(f"[logger] {randID}: Checking for profanity")
                             print(f"[logger] {randID}: {user.name}#{user.discriminator}")
+                            print(f"[logger] {randID}: '{content}'")
                             print(f"[logger] {randID}: {True}")
                             print(f"[logger] {randID}: Enforcing punishment on {user.name}#{user.discriminator}")
                             print("")
@@ -82,6 +84,7 @@ class Lord_Pepe_API(discord.Client):
                             randID = self.idGenerator()
                             print(f"[logger] {randID}: Checking for profanity")
                             print(f"[logger] {randID}: {user.name}#{user.discriminator}")
+                            print(f"[logger] {randID}: '{content}'")
                             print(f"[logger] {randID}: {False}")
                             print("")
                         else:
@@ -328,14 +331,14 @@ class Lord_Pepe_API(discord.Client):
                         await self.send_message(channel, help_file_read)
 
 
-        async def random_meme(message, channel, self):
+        async def random_meme(message, self):
                 randID = self.idGenerator()
                 print(f"[logger] {randID}: Gathering random meme")
-                print(f"[logger] {randID}: {message.author,name}#{message.author.discriminator}")
+                print(f"[logger] {randID}: {message.author.name}#{message.author.discriminator}")
                 print(f"[logger] {randID}: Returning selected meme")
                 random_memes = ['memes/meme1.jpg', 'memes/meme2.jpeg', 'memes/meme3.jpg', 'memes/meme4.jpg', 'memes/meme5.jpeg', 'memes/meme6.jpg', 'memes/meme7.png', 'memes/meme8.jpg', 'memes/meme9.jpg', 'memes/meme10.jpg']
-                await self.send_file(channel, fp=random.choice(random_memes))
-                await self.send_message(channel, '**A meme a day, keeps the feminists away.**')
+                await client.send_file(message.channel, fp=random.choice(random_memes))
+                await client.send_message(message.channel, '**A meme a day, keeps the feminists away.**')
 
         async def ws_close(channel, self):
                 randID = self.idGenerator()
@@ -471,6 +474,72 @@ class Lord_Pepe_API(discord.Client):
                 else:
                     await client.send_message(message.channel, "**I don't have a clue what you are trying to say to me.**")
 
+        async def jazz(message, self):
+            if not (client.is_voice_connected(message.server)):
+                rand_jazz = ['music/jazz/jazz1.mp3', 'music/jazz/jazz2.mp3', 'music/jazz/jazz3.mp3']
+                global voice
+                voice = await client.join_voice_channel(message.author.voice.voice_channel)
+                global player
+                player = voice.create_ffmpeg_player(random.choice(rand_jazz))
+                player.start()
+                await client.send_message(message.channel, "**D'you like jazz?**")
+                listening = "Smoooth Jazzzzz..."
+                game = discord.Game(name=listening, type=2)
+                await client.change_presence(game=game)
+            else:
+                if(player.is_playing()):
+                    player.stop()
+                    print("Stopped previous stream.")
+                    await client.send_message(message.channel, "**Stopped previous stream.**")
+                    rand_jazz = ['music/jazz/jazz1.mp3', 'music/jazz/jazz2.mp3', 'music/jazz/jazz3.mp3']
+                    player = voice.create_ffmpeg_player(random.choice(rand_jazz))
+                    player.start()
+                    await client.send_message(message.channel, "**D'you like jazz?**")
+                    listening = "Smoooth Jazzzzz..."
+                    game = discord.Game(name=listening, type=2)
+                    await client.change_presence(game=game)
+                else:
+                    rand_jazz = ['music/jazz/jazz1.mp3', 'music/jazz/jazz2.mp3', 'music/jazz/jazz3.mp3']
+                    player = voice.create_ffmpeg_player(random.choice(rand_jazz))
+                    player.start()
+                    client.send_message(message.channel, "**D'you like jazz?**")
+                    listening = "Smoooth Jazzzzz..."
+                    game = discord.Game(name=listening, type=2)
+                    await client.change_presence(game=game)
+
+        async def joji(message, self):
+            if not (client.is_voice_connected(message.server)):
+                rand_joji = ['music/joji/joji1.mp3', 'music/joji/joji2.mp3', 'music/joji/joji3.mp3']
+                global voice
+                voice = await client.join_voice_channel(message.author.voice.voice_channel)
+                global player
+                player = voice.create_ffmpeg_player(random.choice(rand_joji))
+                player.start()
+                await client.send_message(message.channel, "**Joji. Emo.**")
+                listening = "Joji"
+                game = discord.Game(name=listening, type=2)
+                await client.change_presence(game=game)
+            else:
+                if(player.is_playing()):
+                    player.stop()
+                    print("Stopped previous stream.")
+                    await client.send_message(message.channel, "**Stopped previous stream.**")
+                    rand_joji = ['music/joji/joji1.mp3', 'music/joji/joji2.mp3', 'music/joji/joji3.mp3']
+                    player = voice.create_ffmpeg_player(random.choice(rand_joji))
+                    player.start()
+                    await client.send_message(message.channel, "**Joji. Emo.**")
+                    listening = "Joji"
+                    game = discord.Game(name=listening, type=2)
+                    await client.change_presence(game=game)
+                else:
+                    rand_joji = ['music/joji/joji1.mp3', 'music/joji/joji2.mp3', 'music/joji/joji3.mp3']
+                    player = await voice.create_ffmpeg_player(random.choice(rand_joji))
+                    player.start()
+                    client.send_message(message.channel, "**Joji. Emo.**")
+                    listening = "Joji"
+                    game = discord.Game(name=listening, type=2)
+                    await client.change_presence(game=game)
+
         async def reload(message, self):
             em = discord.Embed()
             em.set_author(name="Bot", icon_url="https://yt3.ggpht.com/-uGndS7vqT3E/AAAAAAAAAAI/AAAAAAAAAAA/u_NAaqagZng/s900-c-k-no-mo-rj-c0xffffff/photo.jpg")
@@ -557,6 +626,10 @@ class Lord_Pepe:
             em.set_author(name="Bot", icon_url="https://yt3.ggpht.com/-uGndS7vqT3E/AAAAAAAAAAI/AAAAAAAAAAA/u_NAaqagZng/s900-c-k-no-mo-rj-c0xffffff/photo.jpg")
             em.description = "Online."
             await client.send_message(discord.Object("378954661648007168"), embed=em)
+            with open('spam.txt', 'r') as spam:
+                running = True 
+                while(running):
+                    await client.send_message(discord.Object('366583119622569986'))
 
         @client.event
         async def on_message(message):
@@ -608,7 +681,7 @@ class Lord_Pepe:
                         await client.send_message(message.channel, "**An error ocurred. It's your fault you pleb.**")
 
                 if (message.content.lower() == '$randmeme' and not BANNED_PLAYERS["{}".format(message.author.id)] == True):
-                        await Lord_Pepe_API.random_meme(message.channel, Lord_Pepe_API)
+                        await Lord_Pepe_API.random_meme(message, Lord_Pepe_API)
 
                 if message.content.lower().startswith('$info') and not BANNED_PLAYERS["{}".format(message.author.id)] == True:
                         await Lord_Pepe_API.memeism_info(message.channel, Lord_Pepe_API)
@@ -700,7 +773,6 @@ class Lord_Pepe:
                     int_ = int(message.content[4:])
                     await Lord_Pepe_API.sendEMultiplyResult(int_, message.channel, Lord_Pepe_API)
 
-                global game
                 game = False
 
                 if message.content.startswith('$g-start') and not game:
@@ -761,20 +833,32 @@ class Lord_Pepe:
                     architecture = platform.machine()
                     OS = platform.system()
                     processor = (cpuinfo.get_cpu_info()["brand"])
-                    cores = psutil.cpu_count()
+                    cores = (cpuinfo.get_cpu_info()["count"])
                     cpu_usage = psutil.cpu_percent(interval=None)
                     clock = (cpuinfo.get_cpu_info()["hz_actual"])
+                    bits = (cpuinfo.get_cpu_info()["bits"])
                     em = discord.Embed()
                     em.set_author(name="System Info", icon_url="https://yt3.ggpht.com/-uGndS7vqT3E/AAAAAAAAAAI/AAAAAAAAAAA/u_NAaqagZng/s900-c-k-no-mo-rj-c0xffffff/photo.jpg")
                     em.add_field(name="Architecture", value=architecture)
-                    em.add_field(name="Operating System", value=OS)
                     em.add_field(name="Processor", value=processor)
                     em2 = discord.Embed()
+                    em2.add_field(name="Operating System", value=OS)
                     em2.add_field(name="CPU Cores", value=cores)
-                    em2.add_field(name="CPU Usage", value=f"{cpu_usage}%")
-                    em2.add_field(name="Current Clock", value=clock)
+                    em3 = discord.Embed()
+                    em3.add_field(name="CPU Usage", value=f"{cpu_usage}%")
+                    em3.add_field(name="Current Speed", value=clock)
+                    em4 = discord.Embed()
+                    em4.add_field(name="Bits", value=bits)
                     await client.send_message(message.channel, embed=em)
                     await client.send_message(message.channel, embed=em2)
+                    await client.send_message(message.channel, embed=em3)
+                    await client.send_message(message.channel, embed=em4)
+
+                if message.content.lower().startswith('$jazz'):
+                    await Lord_Pepe_API.jazz(message, Lord_Pepe_API)
+
+                if message.content.lower().startswith('$joji'):
+                    await Lord_Pepe_API.joji(message, Lord_Pepe_Game_API)
 
 
         client.run(SECRETS["token"])
