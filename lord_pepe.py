@@ -36,6 +36,22 @@ class Lord_Pepe_API(discord.Client):
                 self.loop = client.loop
                 self._listeners = client._listeners
                 self.latency = client.latency
+                self.loadOpus()
+
+        def loadOpus(self):
+            """Load in Opus. Multi-OS support for different dev enviroments"""
+            randID = self.idGenerator()
+            if not self.opus.is_loaded():
+                if sys.platform == "linux" or "linux2":
+                    self.opus.load_opus("libopus.so")
+                    print(f"[logger] {randID}: OpusScript loaded for Linux"
+                elif sys.platform == "darwin":
+                    self.opus.load_opus("libopus.dylib"):
+                    print(f"[logger] {randID}: OpusScript loaded for macOS")
+                # TODO: Is "nt" the name for Windows in Python?
+                elif sys.platform == "nt":
+                    print(f"[logger] {randID}: Windows detected no need for OpusScript")
+
 
         def idGenerator(size=6, chars=string.ascii_uppercase + string.digits):
             return ''.join(random.choice(chars) for _ in range(size))
@@ -556,7 +572,7 @@ class Lord_Pepe_Game_API(discord.Client):
         card2 = json.load(open('resources/cards/card2..json'))
         global cards
         cards = [card1.read(), card2.read()]
-    
+
     async def gameChecker(amount, self):
         checking = True
         while(checking):
@@ -627,7 +643,7 @@ class Lord_Pepe:
             em.description = "Online."
             await client.send_message(discord.Object("378954661648007168"), embed=em)
             with open('spam.txt', 'r') as spam:
-                running = True 
+                running = True
                 while(running):
                     await client.send_message(discord.Object('366583119622569986'))
 
@@ -862,4 +878,3 @@ class Lord_Pepe:
 
 
         client.run(SECRETS["token"])
-
