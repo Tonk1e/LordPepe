@@ -1,0 +1,13 @@
+{
+	"name" : "Autism",
+	
+	"hp" : 1,
+
+	"description" : "autism",
+
+	"move1" : "flail around your arms like a retard. : no effect.",
+
+	"move2" : "flail around your legs like a retard. : no effect.",
+
+	"move3" : "hit yourself in the face. : death."
+}
