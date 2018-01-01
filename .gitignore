@@ -1,1 +1,6 @@
 SECRETS.json
+*.mp3
+music/
+__pycache__/
+/resources
+/memes
